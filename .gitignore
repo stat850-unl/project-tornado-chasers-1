@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.tex
+*.markdown
+.DS_store
+.github
+_output/
+/.quarto/

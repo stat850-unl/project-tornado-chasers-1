@@ -1,0 +1,20 @@
+title: "Stat 850 Project"
+author: "Firstname Lastname, Firstname Lastname, ..."
+bibliography: references.bib
+
+project:
+  output-dir: _output
+  render:
+    - guidelines.qmd
+    - proposal.qmd
+    - report.qmd
+    - slides.qmd
+    - README.md
+
+execute:
+  echo: false
+  message: false
+  warning: false
+
+toc: true
+number-sections: true

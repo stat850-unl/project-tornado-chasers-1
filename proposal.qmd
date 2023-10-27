@@ -1,0 +1,82 @@
+---
+title: "Stat 850 Project Proposal"
+format: html
+editor: visual
+---
+
+## Instructions
+
+Each member of your team should modify this document in some way and push their modifications to the repository in a separate commit. This will ensure that you have set your repository up in a way that ensures all group members are working with the same repository.
+
+Please ensure that you have set your git name and email address on your computer by **modifying** the following commands and running them in the terminal:
+
+```         
+git config --global user.name "Mona Lisa"
+git config --global user.email "mona@lisa.com"
+```
+
+In the proposal as in the final report, all of your code chunks should be set so that `echo = F`, which prevents the code from being printed in the report. You should also set `message = F, warning = F`, which will reduce the amount of additional output which is present in the report. You can customize the execution of code in quarto by using additional options, some of which are detailed [here](https://quarto.org/docs/computations/execution-options.html).
+
+## Data
+
+### Source
+
+The data we are using in this project comes from \[link to web site\].
+
+If you cannot link directly to the data file, then you need to additionally describe how someone could acquire the same data:
+
+> You can download the data directly using \[process\]
+
+Provide some code to read in the data (either stored in the repository or read in directly from the source).
+
+### Description
+
+This dataset contains information about ...
+
+It was collected from ...
+
+Here is a data dictionary showing each variable, the type of variable, units, and range of values that are possible:
+
+Note: this is an example table, please modify to actually match your data. Ensure that all of the same information is represented.
+
++-------------+---------------------------------------------------------+-------------+-------+---------------------------------------------------------------+
+| Name        | Description                                             | Type        | Units | Range/Values                                                  |
++=============+=========================================================+=============+=======+===============================================================+
+| day_of_week | The day of the week on which the observation took place | categorical | NA    | 0 = Sunday\                                                   |
+|             |                                                         |             |       | 1 = Monday\                                                   |
+|             |                                                         |             |       | ...\                                                          |
+|             |                                                         |             |       | 6 = Saturday\                                                 |
+|             |                                                         |             |       | 7 = Unknown                                                   |
++-------------+---------------------------------------------------------+-------------+-------+---------------------------------------------------------------+
+| weight      | The weight of the individual                            | numeric     | lbs   | 0 - 300 (max weight measurable on the scale used)\            |
+|             |                                                         |             |       | NA indicates missing data                                     |
++-------------+---------------------------------------------------------+-------------+-------+---------------------------------------------------------------+
+| time        | The time of the observation                             | numeric     | HHMM  | 0000 corresponds to midnight,                                 |
+|             |                                                         |             |       |                                                               |
+|             |                                                         |             |       | 2359 corresponds to 1 minute before midnight on the same day. |
++-------------+---------------------------------------------------------+-------------+-------+---------------------------------------------------------------+
+
+## Project Goals
+
+Describe why this data is interesting and what you hope to do with it.
+
+We will use \[dataset\] to explore the following topics:
+
+-   interesting thing 1
+-   interesting thing 2
+-   ...
+
+We expect to create
+
+-   description of some of the graphs you might create
+-   a shiny application
+-   a statistical model
+-   ...
+
+## Division of Labor
+
+Describe how you plan to work together as a team. Set intermediate deadlines - what do you plan to have done by the project check-in? The more you have done (report/slides/code), the better feedback I can give you.
+
+## Additional Comments
+
+What concerns do you have about this project? This is your place to provide feedback about the project guidelines and ask clarifying questions for me to address either individually or in class, if the question is relevant to everyone.

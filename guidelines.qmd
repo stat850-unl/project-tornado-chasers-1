@@ -1,0 +1,111 @@
+---
+title: "Project Guidelines"
+---
+
+Your final project consists of a written report and a presentation (uploaded to YouTube), to be turned in instead of a final exam. 
+In this project, you will select a topic, acquire data from one or more sources, and present any interesting findings you might come across as you explore your data.
+
+## General rules
+
+- You may work in teams of up to 3 people, but each member of the team should contribute approximately evenly (I will measure this using your git contributions)
+
+- Your work should be reproducible from start to finish. Do not modify the data by hand! I should be able to take the original data and your repository and go through your analysis from start to finish on my own machine.
+
+- You should not have to do any complicated statistical modeling for this project. If you want to fit a model, you need to be able to explain it to the rest of the class - but other members of the class may have had different statistics classes than you've had. In general, this project should focus on exploratory data analysis; any model results should be explained using graphs, not statistical tests.
+
+- Your project should use what you have learned (and what you will learn) about data visualization, data wrangling, programming, functions, interactive graphics, and dynamic documents. Your ultimate goal is to demonstrate the class objectives and your ability to conduct reproducible analyses and produce professional products using markdown and R/Python code. 
+
+## Datasets
+Your dataset(s)
+
+- should be fun and interesting to you.    
+Past classes have worked on data covering witch trials, Super Mario competitive times, personal music databases, and many other topics. You can choose something serious, or something decidedly not serious and be successful with the analysis. The best predictor of success is that the data you're working with is something you find interesting and want to explore.
+
+- should be on a topic of general interest - something you could discuss with your parents or grandparents    
+If you use a technical dataset, you need to write your report with the more general audience in mind, which means you will need to explain any jargon you use, and provide diagrams of e.g. plant anatomy, etc. to get the reader up to speed. If you work with sports data, you should provide an explanation like this as well, because I have no background knowledge about sports at all.
+
+- must have at least **1000 records** (rows) and at least **5 variables**
+
+- must include at least one meaningful categorical variable and one meaningful numeric variable (these can be derived, if you are e.g. working with text or image data)
+
+- must not be published in a textbook or have a published analysis unless 
+    - you get prior permission and 
+    - your analysis is very different from what has previously been published
+    
+- must be something that you can make available to the entire class (so e.g. proprietary datasets from work or other sources aren't acceptable)
+
+- must be traceable to the original source of the data. You MAY NOT use data uploaded to Kaggle - go back to the data source. If you need help assembling your data, come talk to me about it and I may be able to help.
+
+
+Here are some potential sources of interesting and/or fun data that explain how the data was acquired/sourced and (usually) have adequate data documentation:
+
+- [Data is Plural](https://docs.google.com/spreadsheets/d/1wZhPLMCHKJvwOkP4juclhjFgqIY8fQFMemwKL2c64vk/edit#gid=0) archive
+- [TidyTuesday Archive](https://github.com/rfordatascience/tidytuesday)
+- [Data.gov](https://catalog.data.gov/dataset) The US government data archive
+
+
+## Version Control
+
+You should use GitHub to track your project throughout its life cycle. Some tips:
+
+- Pull before you start working, and after each commit.    
+Working in teams on github means that you have to allow for merge conflicts and become skilled at resolving them. This is part of my goal for making you work in groups - forcing you to develop these skills. See https://www.youtube.com/watch?v=97m0N4zIvOs for a demonstration of how to work with merge conflicts in rstudio.
+- I do not expect you to work on branches for this project, unless you really want to - with 3 people and a defined scope, you should be able to work out of the main branch with few problems.
+- Commit your changes in small, task-oriented batches. Try to work on small tasks and commit as soon as you finish the task. This will reduce merge conflicts.
+- Minimize merge conflicts:    
+Put each sentence on a different line in your document - this makes it much easier for git to resolve the changes, as git works line-by-line. I make all of my graduate students do this with their papers, and it makes things much easier to work around.
+- READ THE ERROR MESSAGE FROM GIT.    
+Seriously, this will help you figure out about 90% of the things that go wrong. Git actually has good error messages that help you know what to do next.
+- Only commit the essential files necessary to compile your project report to github. This will reduce merge conflicts and save you a *ton* of time in the long run. 
+    - Don't commit pictures generated by R/python, .tex files generated as an intermediate stage, or even html/pdf files that are the final product until the very end. I have set this repository up in such a way that each of the quarto files renders to the `_output` folder, and git ignores everything in this folder, in the hopes that this will be enough to help you out.
+    - Do commit any R/python source files you need to e.g. define a shiny application or do some data processing. Organize these in a `code` folder, and create a header in each code file that describes what the file does and how it relates to other code files in the project.
+    - Don't commit any files you didn't personally create. Be selective in what you add to git. Use the `.gitignore` file to keep git from tracking files that shouldn't be added to the repository.
+
+
+I will track your contributions to the project using the python `git-fame` package, which you can install with the command `pip install git-fame`. 
+
+I will typically use some variant of the following command to track your group contributions: 
+
+```
+git fame . --incl=".(q|R)md"
+```
+
+This only counts modifications to the markdown files, which ensures that whoever adds a dataset to the repository doesn't get credit for doing a ton of work by just uploading a file. This also ensures that people committing intermediate files don't get credit for making the repository a mess.
+
+## Project Report
+Your project report should:
+
+- be approximately $450\times(2n + 1)$ words, where $n$ is the number of people in your group. The extra length is to allow you space to describe your dataset, methods, and conclusions; everyone will need to do that regardless of group size.    
+If you want to know what the wordcount of your report is, you can run the following command in your terminal (in the project directory, assuming you've cloned it from github classroom):
+
+```
+pandoc --lua-filter wordcount.lua report.qmd
+```
+
+- be grammatically correct. Please feel free to make use of the [writing center](https://www.unl.edu/writing/) for editing, so that your report has appropriate grammar and structure.
+
+- be factually correct, and should reference outside sources appropriately (see below)
+
+- have a references section, using markdown's references functionality. You should not manually compile your bibliography - it should be created automatically using a bib file. 
+
+- reference the software packages you've used in your analysis/report and cite them appropriately. Software is a scholarly work, and deserves to be cited. The `citation()` R command can help you assemble appropriate references for software packages.
+
+- contain an introduction and a conclusion, written in paragraphs. The "meat" of the report should tell a story.
+
+- use figures. Figures must have appropriate captions, and each figure should be referenced within the body of the paper using markdown reference syntax. 
+
+- use the `report.qmd` template file provided in the project repository to assemble your report. It contains demonstrations of all of the requirements above.
+
+
+## Presentation
+
+Your project presentation should:
+
+- include a visual aid (slides or a poster)  that highlight(s) the findings you have presented in your report. The visual aid must be created using LaTeX or markdown. 
+- include participation from each member of your group
+- be approximately $4\times(n+1)$ minutes long. 
+- be uploaded to YouTube (you can set the link such that people with the link can view the presentation but where it is not searchable) or YuJa (but YouTube is easier for your classmates to work with). You will submit the link to the presentation on Canvas.
+
+
+You will be expected to peer-evaluate two other groups presentations and/or reports, using the rubric. 
+
