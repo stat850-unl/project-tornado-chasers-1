@@ -17,17 +17,13 @@ git config --global user.email "mona@lisa.com"
 
 In the proposal as in the final report, all of your code chunks should be set so that `echo = F`, which prevents the code from being printed in the report. You should also set `message = F, warning = F`, which will reduce the amount of additional output which is present in the report. You can customize the execution of code in quarto by using additional options, some of which are detailed [here](https://quarto.org/docs/computations/execution-options.html).
 
-
 ## Introduction
 
+A tornado is a rapidly rotating column of air that extends from a thunderstorm to the ground, forming a funnel-shaped cloud, known as a tornado vortex (Reference). These violent windstorms are characterized by their destructive power, often causing severe damage to structures, vehicles, and natural environments. So this most destructive and fascinating natural phenomena that occur in the United States, with the power to wreak havoc on communities, devastate landscapes, and claim lives. They are often referred to as nature's most violent storms due to their ferocity and unpredictability. In the USA, tornadoes have long been a subject of both fear and awe, prompting researchers, meteorologists, and emergency response teams to seek a deeper understanding of these formidable weather events.
 
-A tornado is a rapidly rotating column of air that extends from a thunderstorm to the ground, forming a funnel-shaped cloud, known as a tornado vortex (Reference). These violent windstorms are characterized by their destructive power, often causing severe damage to structures, vehicles, and natural environments. So this  most destructive and fascinating natural phenomena that occur in the United States, with the power to wreak havoc on communities, devastate landscapes, and claim lives. They are often referred to as nature's most violent storms due to their ferocity and unpredictability. In the USA, tornadoes have long been a subject of both fear and awe, prompting researchers, meteorologists, and emergency response teams to seek a deeper understanding of these formidable weather events. 
-
-The interest in exploring this extensive tornado data set arises from the profound impact that tornadoes have on American society and the natural environment. Tornadoes are a recurring and unpredictable threat, causing significant economic losses and, more importantly, putting human lives at risk. As a researcher, I am driven by the need to better understand the behavior and patterns of tornadoes to mitigate their destructive potential and improve our ability to predict and respond to them. 
+The interest in exploring this extensive tornado data set arises from the profound impact that tornadoes have on American society and the natural environment. Tornadoes are a recurring and unpredictable threat, causing significant economic losses and, more importantly, putting human lives at risk. As a researcher, I am driven by the need to better understand the behavior and patterns of tornadoes to mitigate their destructive potential and improve our ability to predict and respond to them.
 
 The opportunity to delve into a comprehensive data set, spanning more than seven decades, is both exciting and promising. It allows for a deep exploration of trends, anomalies, and potential patterns in tornado occurrence and behavior, which can inform disaster preparedness, risk assessment, and policy development.
-
-
 
 ## Data
 
@@ -50,7 +46,7 @@ str(tornado)
 
 ### Description
 
-This dataset contains information about ...
+This data set contains information about ...
 
 It was collected from ...
 
@@ -77,20 +73,42 @@ Note: this is an example table, please modify to actually match your data. Ensur
 
 ## Project Goals
 
-Describe why this data is interesting and what you hope to do with it.
+The [Tornado Data](https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv) set from NOAA, covering the years 1950 to 2022, is fascinating because it holds the potential to reveal valuable insights. 
 
-We will use \[dataset\] to explore the following topics:
+The goals of this project are to utilize this data to explore and analyze several key aspects related to tornado occurrences in the United States.
+Here are the specific goals and the intriguing subjects we hope to investigate:
 
--   interesting thing 1
--   interesting thing 2
--   ...
+**Tornado Trends and Patterns**
 
-We expect to create
+-   Examine long-term trends in tornado frequency and intensity, and identify any significant changes over the decades. Are tornadoes becoming more frequent or intense over time.
 
--   description of some of the graphs you might create
--   a shiny application
--   a statistical model
--   ...
+-   Investigate seasonal and regional variations in tornado occurrences. Are there particular months or states with higher tornado activity.
+
+-   Investigate the distribution of tornado magnitudes and their classifications.
+
+**Tornado Impact Assessment**
+
+-   Assess the economic and human impact of tornadoes by analyzing variables such as injuries, fatalities, property and crop losses.
+
+-   Explore the spatial distribution of tornado impact, focusing on the geographical areas most affected by these natural disasters.
+
+
+### Data Analyzing Approach
+
+1. To examine long-term trends in tornado frequency and intensity, we can perform a time series analysis of tornado occurrences over the years, studying variations in the number and intensity of tornadoes.
+
+2. For investigating seasonal and regional variations in tornado occurrences, we can create visualizations and summaries that highlight the months and states with the highest tornado activity, using the **mo**, **st**, and **stf** columns.
+
+3. To investigate the distribution of tornado magnitudes, we can create histograms and box plots of the **mag** column, which represents tornado intensity. We can also examine changes in tornado magnitude over time.
+
+4. To assess the economic and human impact of tornadoes, we can calculate statistics such as the mean, median, and maximum values of injuries, fatalities, property losses, and crop losses. This will help identify trends and the most severely affected areas.
+
+5. Analyzing the geographical distribution of tornado impact can be done by mapping the areas with the highest impacts and visualizing the affected regions.
+
+With the data analysis approach mentioned earlier, we are planing to add those in to a Shiny web application. 
+
+Using Shiny application implementation will provides a variety of interactive visualizations within the Shiny application to address each of the project's goals more effectively. 
+
 
 ## Division of Labor
 
