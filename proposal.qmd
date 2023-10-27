@@ -21,7 +21,7 @@ In the proposal as in the final report, all of your code chunks should be set so
 ## Introduction
 
 
-A tornado is a rapidly rotating column of air that extends from a thunderstorm to the ground, forming a funnel-shaped cloud, known as a tornado vortex (Reference). These violent windstorms are characterized by their destructive power, often causing severe damage to structures, vehicles, and natural environments. So this  most destructive and fascinating natural phenomena that occur in the United States, with the power to wreak havoc on communities, devastate landscapes, and claim lives. They are often referred to as nature's most violent storms due to their ferocity and unpredictability. In the USA, tornadoes have long been a subject of both fear and awe, prompting researchers, meteorologists, and emergency response teams to seek a deeper understanding of these formidable weather events. This proposal aims to explore and analyze tornado data spanning over seven decades, from 1950 to 2022. 
+A tornado is a rapidly rotating column of air that extends from a thunderstorm to the ground, forming a funnel-shaped cloud, known as a tornado vortex (Reference). These violent windstorms are characterized by their destructive power, often causing severe damage to structures, vehicles, and natural environments. So this  most destructive and fascinating natural phenomena that occur in the United States, with the power to wreak havoc on communities, devastate landscapes, and claim lives. They are often referred to as nature's most violent storms due to their ferocity and unpredictability. In the USA, tornadoes have long been a subject of both fear and awe, prompting researchers, meteorologists, and emergency response teams to seek a deeper understanding of these formidable weather events. 
 
 The interest in exploring this extensive tornado data set arises from the profound impact that tornadoes have on American society and the natural environment. Tornadoes are a recurring and unpredictable threat, causing significant economic losses and, more importantly, putting human lives at risk. As a researcher, I am driven by the need to better understand the behavior and patterns of tornadoes to mitigate their destructive potential and improve our ability to predict and respond to them. 
 
@@ -35,7 +35,18 @@ The opportunity to delve into a comprehensive data set, spanning more than seven
 
 The data we are using in this project comes from [Tornado Data](https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv).
 
-Provide some code to read in the data (either stored in the repository or read in directly from the source).
+```{r, echo = F,message = F, warning = F}
+
+library(tidyverse)
+
+#read the data
+
+tornado <-read.csv("https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv")
+
+#print the data information
+str(tornado)
+
+```
 
 ### Description
 
