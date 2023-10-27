@@ -1,8 +1,11 @@
 ---
 title: "Stat 850 Project"
-author: "Firstname Lastname, Firstname Lastname, ..."
+author: "Chathurika Narayna, Li Song"
 format: md
 ---
+
+
+
 
 [Project Guidelines](guidelines.qmd)
 
