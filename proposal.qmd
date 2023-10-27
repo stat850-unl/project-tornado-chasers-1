@@ -33,11 +33,7 @@ The opportunity to delve into a comprehensive data set, spanning more than seven
 
 ### Source
 
-The data we are using in this project comes from \[link to web site\].
-
-If you cannot link directly to the data file, then you need to additionally describe how someone could acquire the same data:
-
-> You can download the data directly using \[process\]
+The data we are using in this project comes from [Tornado Data](https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv).
 
 Provide some code to read in the data (either stored in the repository or read in directly from the source).
 
