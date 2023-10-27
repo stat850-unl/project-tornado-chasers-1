@@ -17,6 +17,18 @@ git config --global user.email "mona@lisa.com"
 
 In the proposal as in the final report, all of your code chunks should be set so that `echo = F`, which prevents the code from being printed in the report. You should also set `message = F, warning = F`, which will reduce the amount of additional output which is present in the report. You can customize the execution of code in quarto by using additional options, some of which are detailed [here](https://quarto.org/docs/computations/execution-options.html).
 
+
+## Introduction
+
+
+A tornado is a rapidly rotating column of air that extends from a thunderstorm to the ground, forming a funnel-shaped cloud, known as a tornado vortex (Reference). These violent windstorms are characterized by their destructive power, often causing severe damage to structures, vehicles, and natural environments. So this  most destructive and fascinating natural phenomena that occur in the United States, with the power to wreak havoc on communities, devastate landscapes, and claim lives. They are often referred to as nature's most violent storms due to their ferocity and unpredictability. In the USA, tornadoes have long been a subject of both fear and awe, prompting researchers, meteorologists, and emergency response teams to seek a deeper understanding of these formidable weather events. This proposal aims to explore and analyze tornado data spanning over seven decades, from 1950 to 2022. 
+
+The interest in exploring this extensive tornado data set arises from the profound impact that tornadoes have on American society and the natural environment. Tornadoes are a recurring and unpredictable threat, causing significant economic losses and, more importantly, putting human lives at risk. As a researcher, I am driven by the need to better understand the behavior and patterns of tornadoes to mitigate their destructive potential and improve our ability to predict and respond to them. 
+
+The opportunity to delve into a comprehensive data set, spanning more than seven decades, is both exciting and promising. It allows for a deep exploration of trends, anomalies, and potential patterns in tornado occurrence and behavior, which can inform disaster preparedness, risk assessment, and policy development.
+
+
+
 ## Data
 
 ### Source
@@ -39,22 +51,22 @@ Here is a data dictionary showing each variable, the type of variable, units, an
 
 Note: this is an example table, please modify to actually match your data. Ensure that all of the same information is represented.
 
-+-------------+---------------------------------------------------------+-------------+-------+---------------------------------------------------------------+
-| Name        | Description                                             | Type        | Units | Range/Values                                                  |
-+=============+=========================================================+=============+=======+===============================================================+
-| day_of_week | The day of the week on which the observation took place | categorical | NA    | 0 = Sunday\                                                   |
-|             |                                                         |             |       | 1 = Monday\                                                   |
-|             |                                                         |             |       | ...\                                                          |
-|             |                                                         |             |       | 6 = Saturday\                                                 |
-|             |                                                         |             |       | 7 = Unknown                                                   |
-+-------------+---------------------------------------------------------+-------------+-------+---------------------------------------------------------------+
-| weight      | The weight of the individual                            | numeric     | lbs   | 0 - 300 (max weight measurable on the scale used)\            |
-|             |                                                         |             |       | NA indicates missing data                                     |
-+-------------+---------------------------------------------------------+-------------+-------+---------------------------------------------------------------+
-| time        | The time of the observation                             | numeric     | HHMM  | 0000 corresponds to midnight,                                 |
-|             |                                                         |             |       |                                                               |
-|             |                                                         |             |       | 2359 corresponds to 1 minute before midnight on the same day. |
-+-------------+---------------------------------------------------------+-------------+-------+---------------------------------------------------------------+
++-------------+---------------------------------------------------------+-------------+---------+---------------------------------------------------------------+
+| Name        | Description                                             | Type        | Units   | Range/Values                                                  |
++=============+=========================================================+=============+=========+===============================================================+
+| day_of_week | The day of the week on which the observation took place | categorical | NA      | 0 = Sunday\                                                   |
+|             |                                                         |             |         | 1 = Monday\                                                   |
+|             |                                                         |             |         | ...\                                                          |
+|             |                                                         |             |         | 6 = Saturday\                                                 |
+|             |                                                         |             |         | 7 = Unknown                                                   |
++-------------+---------------------------------------------------------+-------------+---------+---------------------------------------------------------------+
+| weight      | The weight of the individual                            | numeric     | lbs     | 0 - 300 (max weight measurable on the scale used)\            |
+|             |                                                         |             |         | NA indicates missing data                                     |
++-------------+---------------------------------------------------------+-------------+---------+---------------------------------------------------------------+
+| time        | The time of the observation                             | numeric     | HHMM    | 0000 corresponds to midnight,                                 |
+|             |                                                         |             |         |                                                               |
+|             |                                                         |             |         | 2359 corresponds to 1 minute before midnight on the same day. |
++-------------+---------------------------------------------------------+-------------+---------+---------------------------------------------------------------+
 
 ## Project Goals
 
