@@ -117,3 +117,5 @@ Describe how you plan to work together as a team. Set intermediate deadlines - w
 ## Additional Comments
 
 What concerns do you have about this project? This is your place to provide feedback about the project guidelines and ask clarifying questions for me to address either individually or in class, if the question is relevant to everyone.
+
+## References
