@@ -4,9 +4,9 @@ format: html
 editor: visual
 ---
 
-## 1.Introduction
+## Introduction
 
-A tornado is a rapidly rotating column of air that extends from a thunderstorm to the ground, forming a funnel-shaped cloud, known as a tornado vortex (Reference). These violent windstorms are characterized by their destructive power, often causing severe damage to structures, vehicles, and natural environments. So this most destructive and fascinating natural phenomena that occur in the United States, with the power to wreak havoc on communities, devastate landscapes, and claim lives. They are often referred to as nature's most violent storms due to their ferocity and unpredictability. In the USA, tornadoes have long been a subject of both fear and awe, prompting researchers, meteorologists, and emergency response teams to seek a deeper understanding of these formidable weather events.
+A tornado is a rapidly rotating column of air that extends from a thunderstorm to the ground, forming a funnel-shaped cloud, known as a tornado vortex ([Tornadoes.(n.d.)](https://www.nssl.noaa.gov/research/tornadoes/)). These violent windstorms are characterized by their destructive power, often causing severe damage to structures, vehicles, and natural environments. So this most destructive and fascinating natural phenomena that occur in the United States, with the power to wreak havoc on communities, devastate landscapes, and claim lives. They are often referred to as nature's most violent storms due to their ferocity and unpredictability. In the USA, tornadoes have long been a subject of both fear and awe, prompting researchers, meteorologists, and emergency response teams to seek a deeper understanding of these formidable weather events.
 
 The interest in exploring this extensive tornado data set arises from the profound impact that tornadoes have on American society and the natural environment. Tornadoes are a recurring and unpredictable threat, causing significant economic losses and, more importantly, putting human lives at risk. As a researcher, I am driven by the need to better understand the behavior and patterns of tornadoes to mitigate their destructive potential and improve our ability to predict and respond to them.
 
@@ -35,12 +35,12 @@ str(tornado)
 
 This data set provides comprehensive information about tornadoes, including various attributes such as tornado numbers, years, months, days, dates, times, geographical coordinates, magnitudes, injuries, fatalities, property losses, and more. The data offers insights into the characteristics and impacts of tornadoes that have occurred from 1950 to 2022.
 
-It is sourced from NOAA's National Weather Service Storm Prediction Center Severe Weather Maps, Graphics, and Data Page (ref).This offers a rich resource for the analysis and study of tornado occurrences and their impacts, enabling researchers and meteorologists to gain insights into the patterns and characteristics of tornadoes spanning over seven decades.
+It is sourced from NOAA's National Weather Service Storm Prediction Center Severe Weather Maps, Graphics, and Data Page  ([Storm Prediction](https://www.spc.noaa.gov/wcm/)).This offers a rich resource for the analysis and study of tornado occurrences and their impacts, enabling researchers and meteorologists to gain insights into the patterns and characteristics of tornadoes spanning over seven decades.
 
 Here is a data dictionary showing each variable, the type of variable, units, and range of values that are possible:
 
 +------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+-------+
-|   Name                                   |   Description                                                                                                                                                                                                |   Type      |   Units    |   Range/Values                                                                                                                                            |       |
+| Name                                     | Description                                                                                                                                                                                                  | Type        | Units      | Range/Values                                                                                                                                              |       |
 +------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+-------+
 | Tornado Number (om)                      | An identifier for each tornado within a specific year                                                                                                                                                        | Integer     |            |                                                                                                                                                           |       |
 +------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+-------+
@@ -58,7 +58,7 @@ Here is a data dictionary showing each variable, the type of variable, units, an
 +------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+-------+
 | State (st)                               | Affected State                                                                                                                                                                                               | categorical |            | A two-letter postal abbreviation representing the affected state. (DC=Washington,DC;PR=Puerto Rico,VI=Virgin Islands)                                     |       |
 +------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+-------+
-| State FIPS Number (stf)                  | The State FIPS (Federal Information Processing Standards) number. (Refference)                                                                                                                               | Integer     |            |                                                                                                                                                           |       |
+| State FIPS Number (stf)                  | The State FIPS (Federal Information Processing Standards) number.                                                                                                                                            | Integer     |            |                                                                                                                                                           |       |
 +------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+-------+
 | Magnitude (mag)                          | The magnitude of the tornado, recorded on the [F scale](https://www.spc.noaa.gov/faq/tornado/f-scale.html). [EF scale](https://www.weather.gov/tae/ef_scale) from 2007. Some are estimated                   | Integer     |            |                                                                                                                                                           |       |
 +------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+-------+
@@ -97,7 +97,15 @@ Here is a data dictionary showing each variable, the type of variable, units, an
 
 The [Tornado Data](https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv) set from NOAA, covering the years 1950 to 2022, is fascinating because it holds the potential to reveal valuable insights.
 
-The goals of this project are to utilize this data to explore and analyze several key aspects related to tornado occurrences in the United States. Here are the specific goals and the intriguing subjects we hope to investigate:
+The goals of this project are to utilize this data to explore and analyze several key aspects related to tornado occurrences in the United States. Here are the specific goals and the intriguing subjects we hope to investigate.
+
+**Data Cleaning and Pre-processing**
+
+-   Conduct data cleaning to handle missing values, outliers, and inconsistencies in the tornado data set, ensuring that the data is of high quality for analysis.
+
+-   Standardize and transform data types as needed to make the data set suitable for statistical analysis.
+
+-   Data Pre-processing with standardize data types and formats to ensure consistency.
 
 **Tornado Trends and Patterns**
 
@@ -113,28 +121,56 @@ The goals of this project are to utilize this data to explore and analyze severa
 
 -   Explore the spatial distribution of tornado impact, focusing on the geographical areas most affected by these natural disasters.
 
+**Developing Shiny Application**
+
+-   The Shiny application will be built to import and utilize the tornado data set.
+
 ### Data Analyzing Approach
 
-1.  To examine long-term trends in tornado frequency and intensity, we can perform a time series analysis of tornado occurrences over the years, studying variations in the number and intensity of tornadoes.
+1.  Identifying and addressing missing values in the tornado data set. This will involve techniques such as imputation or removal of rows with significant missing data. Special attention will be given to critical columns, such as **inj**, **fat**, and **mag**. And perform outlier detection to identify data points that significantly deviate from the norm
 
-2.  For investigating seasonal and regional variations in tornado occurrences, we can create visualizations and summaries that highlight the months and states with the highest tornado activity, using the **mo**, **st**, and **stf** columns.
+2.  Data inconsistencies, such as conflicting records or contradictory information, will be resolved. This may involve cross-referencing with external sources particularly in FIPS Codes for Counties (**f1**, **f2**, **f3**, **f4**).
 
-3.  To investigate the distribution of tornado magnitudes, we can create histograms and box plots of the **mag** column, which represents tornado intensity. We can also examine changes in tornado magnitude over time.
+3.  Additional features or variables may be created to enhance the analysis. For example, calculate the total impact (injuries, fatalities, loss) for each tornado event, create time-based variables (season, time of day).
 
-4.  To assess the economic and human impact of tornadoes, we can calculate statistics such as the mean, median, and maximum values of injuries, fatalities, property losses, and crop losses. This will help identify trends and the most severely affected areas.
+4.  To examine long-term trends in tornado frequency and intensity, we can perform a time series analysis of tornado occurrences over the years, studying variations in the number and intensity of tornadoes.
 
-5.  Analyzing the geographical distribution of tornado impact can be done by mapping the areas with the highest impacts and visualizing the affected regions.
+5.  For investigating seasonal and regional variations in tornado occurrences, we can create visualizations and summaries that highlight the months and states with the highest tornado activity, using the **mo**, **st**, and **stf** columns.
 
-With the data analysis approach mentioned earlier, we are planing to add those in to a Shiny web application.
+6.  To investigate the distribution of tornado magnitudes, we can create histograms and box plots of the **mag** column, which represents tornado intensity. We can also examine changes in tornado magnitude over time.
 
-Using Shiny application implementation will provides a variety of interactive visualizations within the Shiny application to address each of the project's goals more effectively.
+7.  To assess the economic and human impact of tornadoes, we can calculate statistics such as the mean, median, and maximum values of injuries, fatalities, property losses, and crop losses. This will help identify trends and the most severely affected areas.
+
+8.  Analyzing the geographical distribution of tornado impact can be done by mapping the areas with the highest impacts and visualizing the affected regions.
+
+9.  With the data analysis approach mentioned earlier, we are planing to add those in to a Shiny web application with implementing a variety of interactive visualizations within the Shiny application to address each of the project's goals more effectively. For instance:
+
+-   Time series plots for trend analysis.
+-   Heatmaps, choropleth maps, or scatter plots to visualize regional and seasonal variations.
+-   Box plots, histograms, and distribution curves for magnitude and impact analysis.
+-   Interactive maps for visualizing tornado impact locations.
 
 ## Division of Labor
 
-Describe how you plan to work together as a team. Set intermediate deadlines - what do you plan to have done by the project check-in? The more you have done (report/slides/code), the better feedback I can give you.
+| Steps                                     | Members        | Deadline                |
+|-------------------------------------------|----------------|-------------------------|
+| Proposal Document                         | Chathurika, Li | Week 1-Due 10/30/2023   |
+| Data Cleaning and Pre-processing          | Li             | Week 1                  |
+| Additional features or variables creating | Chathurika     | Week 1,2                |
+| Identify Tornado Trends and Patterns      | Li             | Week 2                  |
+| Tornado Impact Assessment                 | Chathurika     | Week 2                  |
+| Developing Shiny Application              | Chathurika     | Week 4                  |
+| Project Presentation                      | Chathurika, Li | Week 5-Due 12/04/2023   |
+| Project Report                            | Chathurika, Li | Week 5,6-Due 12/08/2023 |
 
-## Additional Comments
 
-What concerns do you have about this project? This is your place to provide feedback about the project guidelines and ask clarifying questions for me to address either individually or in class, if the question is relevant to everyone.
 
 ## References
+
+Tornadoes. (n.d.). NOAA National Severe Storms Laboratory. https://www.nssl.noaa.gov/research/tornadoes/
+In-Text Citation: (Tornadoes, n.d.)
+
+Storm Prediction Center Maps, Graphics, and Data Page. (n.d.). https://www.spc.noaa.gov/wcm/
+In-Text Citation: (Storm Prediction Center Maps, Graphics, and Data Page, n.d.)
+
+
