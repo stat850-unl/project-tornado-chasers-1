@@ -1,6 +1,6 @@
 ---
 title: "Stat 850 Project"
-author: "Chathurika Narayna,Li Song"
+author: "Chathurika Narayna, Li Song"
 format: md
 ---
 
