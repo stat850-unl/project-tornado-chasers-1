@@ -35,7 +35,7 @@ str(tornado)
 
 This data set provides comprehensive information about tornadoes, including various attributes such as tornado numbers, years, months, days, dates, times, geographical coordinates, magnitudes, injuries, fatalities, property losses, and more. The data offers insights into the characteristics and impacts of tornadoes that have occurred from 1950 to 2022.
 
-It is sourced from NOAA's National Weather Service Storm Prediction Center Severe Weather Maps, Graphics, and Data Page  ([Storm Prediction](https://www.spc.noaa.gov/wcm/)).This offers a rich resource for the analysis and study of tornado occurrences and their impacts, enabling researchers and meteorologists to gain insights into the patterns and characteristics of tornadoes spanning over seven decades.
+It is sourced from NOAA's National Weather Service Storm Prediction Center Severe Weather Maps, Graphics, and Data Page ([Storm Prediction](https://www.spc.noaa.gov/wcm/)).This offers a rich resource for the analysis and study of tornado occurrences and their impacts, enabling researchers and meteorologists to gain insights into the patterns and characteristics of tornadoes spanning over seven decades.
 
 Here is a data dictionary showing each variable, the type of variable, units, and range of values that are possible:
 
@@ -152,25 +152,48 @@ The goals of this project are to utilize this data to explore and analyze severa
 
 ## Division of Labor
 
++-------------------------------------------+----------------+-------------------------+
 | Steps                                     | Members        | Deadline                |
-|-------------------------------------------|----------------|-------------------------|
++===========================================+================+=========================+
 | Proposal Document                         | Chathurika, Li | Week 1-Due 10/30/2023   |
++-------------------------------------------+----------------+-------------------------+
 | Data Cleaning and Pre-processing          | Li             | Week 1                  |
++-------------------------------------------+----------------+-------------------------+
 | Additional features or variables creating | Chathurika     | Week 1,2                |
++-------------------------------------------+----------------+-------------------------+
 | Identify Tornado Trends and Patterns      | Li             | Week 2                  |
++-------------------------------------------+----------------+-------------------------+
 | Tornado Impact Assessment                 | Chathurika     | Week 2                  |
++-------------------------------------------+----------------+-------------------------+
 | Developing Shiny Application              | Chathurika     | Week 4                  |
++-------------------------------------------+----------------+-------------------------+
 | Project Presentation                      | Chathurika, Li | Week 5-Due 12/04/2023   |
++-------------------------------------------+----------------+-------------------------+
 | Project Report                            | Chathurika, Li | Week 5,6-Due 12/08/2023 |
-
-
++-------------------------------------------+----------------+-------------------------+
 
 ## References
 
-Tornadoes. (n.d.). NOAA National Severe Storms Laboratory. https://www.nssl.noaa.gov/research/tornadoes/
-In-Text Citation: (Tornadoes, n.d.)
+Tornadoes. (n.d.). NOAA National Severe Storms Laboratory. https://www.nssl.noaa.gov/research/tornadoes/ In-Text Citation: (Tornadoes, n.d.)
 
-Storm Prediction Center Maps, Graphics, and Data Page. (n.d.). https://www.spc.noaa.gov/wcm/
-In-Text Citation: (Storm Prediction Center Maps, Graphics, and Data Page, n.d.)
+Storm Prediction Center Maps, Graphics, and Data Page. (n.d.). https://www.spc.noaa.gov/wcm/ In-Text Citation: (Storm Prediction Center Maps, Graphics, and Data Page, n.d.)
 
 
+------
+
+project-tornado-chasers-1$ git fame . --incl=".(q|Q|r|R)md"
+Processing: 100%|██████████████████████████████████████████████████████████████████████████████████████████████| 5/5 [00:00<00:00, 337.16file/s]
+Total commits: 22
+Total ctimes: 49
+Total files: 5
+Total loc: 412
+| Author                      |   loc |   coms |   fils |  distribution   |
+|:----------------------------|------:|-------:|-------:|:----------------|
+| github-classroom[bot]       |   264 |      1 |      4 | 64.1/ 4.5/80.0  |
+| Mona LisaChathurikaHarshani |   148 |     12 |      1 | 35.9/54.5/20.0  |
+| Li Song                     |     0 |      9 |      0 | 0.0/40.9/ 0.0   |
+
+I suggest Chathurika change her name to be Chathurika Harshani instead of Mona Lisa ChathurikaHarshani, but I'm not going to judge :)
+
+
+Side note: I <3 this dataset so much. I hope you have lots of fun with it.
