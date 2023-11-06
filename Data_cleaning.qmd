@@ -2,8 +2,14 @@
 ```{r setup, include=FALSE}
 install.packages("tidytuesdayR")
 library(tidytuesdayR)
+library(tidyverse)
 ```
 #read tornados data
 ```{r db-setup-r}
 tornados <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-05-16/tornados.csv')
+summary(tornados)
+glimpse(tornados)
+
+
+
 ```
