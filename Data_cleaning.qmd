@@ -14,6 +14,6 @@ Missing_value<-is.na(tornados)
 Col_with_True <- colSums(Missing_value == 'TRUE') > 0
 Col_with_missing <- Missing_value[, Col_with_True]
 
-###We found the coloumn of mag and loss have missing value
+###We found the column of mag and loss have missing value
 
 ```
