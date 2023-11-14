@@ -17,3 +17,50 @@ Col_with_missing <- Missing_value[, Col_with_True]
 ###We found the column of mag and loss have missing value
 
 ```
+
+
+
+
+1. libraries
+
+```{r}
+library(tidyverse)
+library(stringr)
+
+```
+
+2. Read the data set
+
+```{r, echo = F,message = F, warning = F}
+
+#read the data
+
+tornado <-read.csv("https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv")
+
+#print the data information
+str(tornado)
+
+
+```
+The data.frame "tornado" has 29 variables and 68,701 observations. 
+
+3. Check for missing values in the dataset.
+
+
+```{r}
+# Check for missing values in each column
+missing_values <- colSums(is.na(tornado))
+
+# Print the results
+print(missing_values)
+
+```
+It looks like the output indicates that there are no missing values in any of the columns of your "tornado" data frame. Each column has a count of 0, meaning there are no missing values.
+
+4. Handling Inconsistent Values
+
+```{r}
+summary(tornado)
+
+
+```
