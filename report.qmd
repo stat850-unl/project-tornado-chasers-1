@@ -69,6 +69,8 @@ libraries
 ```{r}
 library(tidyverse)
 library(stringr)
+library(tmap)
+library(ggplot2)
 
 ```
 
@@ -231,25 +233,140 @@ VII. Interpret the Results:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 2.   Investigate seasonal and regional variations in tornado occurrences. Are there particular months or states with higher tornado activity.
+
+
+Steps to investigate seasonal and regional variations in tornado occurrences using interactive maps. 
+
+I. Prepare Data for Mapping:
+   - Subset the data to include relevant variables for mapping, such as latitude (`slat` and `elat`), longitude (`slon` and `elon`), and the month of occurrence (`mo`).
+
+```{r}
+# Subset the data
+tornado_map_data <- tornado[, c("slat", "slon", "elat", "elon", "mo","st")]
+```
+
+3. **Create Seasonal and Regional Aggregations:**
+   - Aggregate tornado occurrences by month and region (state).
+
+```{r}
+# Aggregate tornado occurrences by month
+tornado_monthly_counts <- aggregate(slat ~ mo, data = tornado_map_data, FUN = length)
+
+# Aggregate tornado occurrences by state (assuming states are available in the dataset)
+tornado_state_counts <- aggregate(slat ~ st, data = tornado_map_data, FUN = length)
+```
+
+4. **Create Interactive Maps:**
+   - Use `tmap` to create interactive maps for monthly and regional variations.
+```{r}
+
+# Create a mapping between state abbreviations and full names
+state_mapping <- c("AL" = "Alabama", "AK" = "Alaska", "AZ" = "Arizona", "AR" = "Arkansas", "CA" = "California",
+                   "CO" = "Colorado", "CT" = "Connecticut", "DE" = "Delaware", "FL" = "Florida", "GA" = "Georgia",
+                   "HI" = "Hawaii", "ID" = "Idaho", "IL" = "Illinois", "IN" = "Indiana", "IA" = "Iowa",
+                   "KS" = "Kansas", "KY" = "Kentucky", "LA" = "Louisiana", "ME" = "Maine", "MD" = "Maryland",
+                   "MA" = "Massachusetts", "MI" = "Michigan", "MN" = "Minnesota", "MS" = "Mississippi", "MO" = "Missouri",
+                   "MT" = "Montana", "NE" = "Nebraska", "NV" = "Nevada", "NH" = "New Hampshire", "NJ" = "New Jersey",
+                   "NM" = "New Mexico", "NY" = "New York", "NC" = "North Carolina", "ND" = "North Dakota", "OH" = "Ohio",
+                   "OK" = "Oklahoma", "OR" = "Oregon", "PA" = "Pennsylvania", "RI" = "Rhode Island", "SC" = "South Carolina",
+                   "SD" = "South Dakota", "TN" = "Tennessee", "TX" = "Texas", "UT" = "Utah", "VT" = "Vermont",
+                   "VA" = "Virginia", "WA" = "Washington", "WV" = "West Virginia", "WI" = "Wisconsin", "WY" = "Wyoming")
+
+# Add a new column with full state names
+tornado$state_full <- state_mapping[tornado$st]
+
+# Print the first few rows to verify
+#head(tornado[, c("st", "state_full")])
+```
+
+
+
+```{r}
+library(leaflet)
+library(dplyr)
+library(sf)
+
+# Assuming your data frame is named 'tornado' and contains a column 'state_full'
+# Create a summary data frame with tornado counts by state
+tornado_counts <- tornado %>%
+  group_by(state_full) %>%
+  summarise(tornado_count = n())
+
+# Load a data frame mapping state names to state abbreviations
+state_abbreviations <- data.frame(
+  state_full = state.name,
+  state_abbr = state.abb
+)
+
+# Merge tornado counts with state abbreviations
+tornado_counts <- merge(tornado_counts, state_abbreviations, by = "state_full")
+
+# Load U.S. state map data
+us_states <- st_as_sf(map("state", plot = FALSE, fill = TRUE))
+
+# Check and fix invalid geometries
+us_states1 <- st_make_valid(us_states)
+# Convert 'ID' column in 'us_states1' to lowercase
+us_states1$ID <- tolower(us_states1$ID)
+
+# Convert 'state_full' column in 'tornado_counts' to lowercase
+tornado_counts$state_full <- tolower(tornado_counts$state_full)
+
+# Merge tornado counts with U.S. state map (case-insensitive)
+us_states <- merge(us_states1, tornado_counts, by.x = "ID", by.y = "state_full", all.x = TRUE)
+
+
+# Merge tornado counts with U.S. state map
+us_states <- merge(us_states1, tornado_counts, by.x = "ID", by.y = "state_full", all.x = TRUE)
+
+# Create an interactive map
+leaflet(data = us_states) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addPolygons(
+    fillColor = ~colorQuantile("Blues", us_states$tornado_count)(us_states$tornado_count),
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
+    label = ~paste(state_abbr, "<br>", "Tornado Count:", tornado_count)
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    pal = colorQuantile("Blues", us_states$tornado_count),
+    values = us_states$tornado_count,
+    title = "Tornado Count",
+    opacity = 0.7
+  ) %>%
+  addMiniMap(toggleDisplay = TRUE)
+
+
+```
+
+
+
+
+Note: In this example, the assumption is made that there is a dataset named `world` that contains geometries for world countries. You may need to replace it with the appropriate dataset for your region or country.
+
+Adjust the code based on the specific structure of your data and your mapping requirements. Explore additional features of the `tmap` package for more customization options and interactivity.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 3.   Investigate the distribution of tornado magnitudes and their classifications.
 
