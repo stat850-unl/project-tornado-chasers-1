@@ -76,7 +76,7 @@ library(stringr)
 
 1.  Conduct data cleaning to handle missing values, outliers, and inconsistencies in the tornado data set, ensuring that the data is of high quality for analysis.
 
-- Print the data information
+-   Print the data information
 
 ```{r, echo = F,message = F, warning = F}
 #print the data information
@@ -86,7 +86,7 @@ str(tornado)
 
 The data.frame "tornado" has 29 variables and 68,701 observations.
 
-- Check for missing values in the data set.
+-   Check for missing values in the data set.
 
 ```{r}
 # Check for missing values in each column
@@ -99,7 +99,7 @@ print(missing_values)
 
 It looks like the output indicates that there are no missing values in any of the columns of your "tornado" data frame. Each column has a count of 0, meaning there are no missing values.
 
-- Identify and Handling Inconsistent Values
+-   Identify and Handling Inconsistent Values
 
 ```{r}
 summary(tornado)
@@ -107,12 +107,12 @@ summary(tornado)
 
 some potential issues or considerations based on the summary:
 
-1. "mag" (Magnitude) Column:
+I. "mag" (Magnitude) Column:
 
 The minimum value is -9, which may be inconsistent since magnitude is typically a non-negative value.
 
 Print rows which have negative magnitude.
-   
+
 ```{r}
 # Identify rows where magnitude is negative
 
@@ -130,35 +130,128 @@ Identify years where magnitude is negative.
 print(unique(negative_mag_rows$yr))
 
 ```
-These rows seem to represent tornadoes from year 2016-2022 where the original magnitude ("mag") is listed as -9, and the "fc" value is set to 0, according to the modification scheme (ref) indicating that no modification was made for these tornadoes. 
+
+These rows seem to represent tornadoes from year 2016-2022 where the original magnitude ("mag") is listed as -9, and the "fc" value is set to 0, according to the modification scheme (ref) indicating that no modification was made for these tornadoes.
 
 This output aligns where tornadoes with a F-scale rating of -9 were not modified based on property loss and path length criteria.
 
-(https://www.spc.noaa.gov/wcm/#data
-https://www.spc.noaa.gov/wcm/OneTor_F-scale-modifications.pdf)
+(https://www.spc.noaa.gov/wcm/#data https://www.spc.noaa.gov/wcm/OneTor_F-scale-modifications.pdf)
 
 
 
+II. "date" and "time" Columns:
 
+Confirm that the "date" and "time" columns are correctly formatted as dates and times, respectively.
 
+```{r}     
+# Convert "date" to Date class
+tornado$date <- as.Date(tornado$date, format="%Y-%m-%d")
 
+# Convert "time" to POSIXct class
+tornado$time <- as.POSIXct(tornado$time, format="%H:%M:%S")
 
+```
 
-
-
-
-
-2.   Standardize and transform data types as needed to make the data set suitable for statistical analysis.
-
-3.   Data Pre-processing with standardize data types and formats to ensure consistency.
 
 **Tornado Trends and Patterns**
 
--   Examine long-term trends in tornado frequency and intensity, and identify any significant changes over the decades. Are tornadoes becoming more frequent or intense over time.
+1.  Examine long-term trends in tornado frequency and intensity, and identify any significant changes over the decades. Are tornadoes becoming more frequent or intense over time.
 
--   Investigate seasonal and regional variations in tornado occurrences. Are there particular months or states with higher tornado activity.
+Steps to examine long-term trends in tornado frequency and intensity and identify any significant changes over the decades.
 
--   Investigate the distribution of tornado magnitudes and their classifications.
+I. Subset the Data for Relevant Variables:
+
+Focus on the variables that are crucial for examining tornado frequency and intensity trends. These may include the year (`yr`), month (`mo`), magnitude (`mag`), and other relevant variables.
+
+```{r} 
+# Subset the data
+tornado_subset <- tornado[, c("yr", "mo", "mag")]
+```
+
+II. Aggregate Tornado Frequency by Year:
+
+Calculate the total number of tornadoes per year to examine the frequency trend.
+
+```{r} 
+# Aggregate tornado frequency by year
+tornado_frequency <- aggregate(mag ~ yr, data = tornado_subset, FUN = length)
+```
+
+III. Plot Tornado Frequency Over Time:
+
+Create a plot to visualize the trend in tornado frequency over the years.
+
+```{r} 
+# Plot tornado frequency over time
+plot(tornado_frequency$yr, tornado_frequency$mag, type = "l", xlab = "Year", ylab = "Tornado Frequency", main = "Tornado Frequency Over Time")
+```
+
+IV. Explore Tornado Intensity Trends:
+
+Examine trends in tornado intensity (magnitude) over time. And calculate the average magnitude per year.
+
+```{r} 
+# Aggregate average tornado magnitude by year
+tornado_intensity <- aggregate(mag ~ yr, data = tornado_subset, FUN = mean)
+
+```
+
+IV. Plot Tornado Intensity Over Time:**
+
+Visualize the trend in tornado intensity over the years.
+
+```{r} 
+# Plot tornado intensity over time
+plot(tornado_intensity$yr, tornado_intensity$mag, type = "l", xlab = "Year", ylab = "Average Tornado Magnitude", main = "Tornado Intensity Over Time")
+```
+
+VI. Fit Trend Lines:
+
+Fit trend lines or regression models to better understand the overall trend.
+
+```{r} 
+# Fit linear trend line for tornado frequency
+trend_frequency <- lm(mag ~ yr, data = tornado_frequency)
+
+# Fit linear trend line for tornado intensity
+trend_intensity <- lm(mag ~ yr, data = tornado_intensity)
+
+# Plot with trend lines
+plot(tornado_frequency$yr, tornado_frequency$mag, type = "l", xlab = "Year", ylab = "Tornado Frequency", main = "Tornado Frequency Over Time with Trend Line")
+abline(trend_frequency, col = "red")
+
+plot(tornado_intensity$yr, tornado_intensity$mag, type = "l", xlab = "Year", ylab = "Average Tornado Magnitude", main = "Tornado Intensity Over Time with Trend Line")
+abline(trend_intensity, col = "red")
+```
+
+VII. Interpret the Results:
+   - Examine the plotted trends and trend lines. If the slope of the trend line is positive, it indicates an increasing trend, while a negative slope indicates a decreasing trend. Assess the statistical significance of the trends.
+ The linear models used for trend lines can be replaced with more complex models if needed. Additionally, consider consulting meteorological experts to gain insights into any external factors that may influence tornado trends.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2.   Investigate seasonal and regional variations in tornado occurrences. Are there particular months or states with higher tornado activity.
+
+3.   Investigate the distribution of tornado magnitudes and their classifications.
 
 **Tornado Impact Assessment**
 
