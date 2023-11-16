@@ -124,6 +124,8 @@ print(negative_mag_rows[, c("om", "yr", "mo", "dy", "mag","fc")])
 
 ```
 
+
+
 Identify years where magnitude is negative.
 
 ```{r}
@@ -283,25 +285,23 @@ print(tornado_monthly_counts )
 
 ```
 
-
-Aggregate tornado occurrences by region (state).
+Count tornado occurrences by region (state).
 
 ```{r}
 
 # Calculate the total number of tornadoes by state
 tornado_state_counts  <- tornado_map_data  %>%
   group_by(st) %>%
-  summarise(total_tornadoes = n())
+  summarise(total_tornadoes = n())%>%
+   arrange(desc( total_tornadoes))
 
-
-print(tornado_state_counts )
+print(tornado_state_counts)
 
 ```
 
+III. Create Interactive Maps and plots:
 
-III. Create Interactive Maps:
-
-Use `tmap` to create interactive maps for monthly and regional variations.
+Create interactive plot for monthly tornado variation.
 
 ```{r}
 
@@ -321,7 +321,8 @@ Create interactive map using `leaflet` to visualize state-wise tornado count
 library(leaflet)
 library(dplyr)
 library(sf)
-
+library(usmap)
+library(maps)  
 
 # Create a summary data frame with tornado counts by state
 tornado_counts <- tornado %>%
@@ -351,22 +352,20 @@ tornado_counts$state_full <- tolower(tornado_counts$state_full)
 # Merge tornado counts with U.S. state map (case-insensitive)
 us_states <- merge(us_states1, tornado_counts, by.x = "ID", by.y = "state_full", all.x = TRUE)
 
-
-# Merge tornado counts with U.S. state map
-us_states <- merge(us_states1, tornado_counts, by.x = "ID", by.y = "state_full", all.x = TRUE)
-
 # Create an interactive map
+# Create an interactive map with a different fill color
 leaflet(data = us_states) %>%
-  addProviderTiles("CartoDB.Positron") %>%
+  addProviderTiles("CartoDB.Voyager") %>%
   addPolygons(
-    fillColor = ~colorQuantile("Blues", us_states$tornado_count)(us_states$tornado_count),
+    fillColor = ~colorQuantile("YlOrRd", us_states$tornado_count)(us_states$tornado_count),
     fillOpacity = 0.7,
     highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
-    label = ~paste(state_abbr, "<br>", "Tornado Count:", tornado_count)
+    label = ~paste(state_abbreviations$state_full,
+                   "Tornado Count:", tornado_count)
   ) %>%
   addLegend(
     position = "bottomright",
-    pal = colorQuantile("Blues", us_states$tornado_count),
+    pal = colorQuantile("YlOrRd", us_states$tornado_count),
     values = us_states$tornado_count,
     title = "Tornado Count",
     opacity = 0.7
@@ -375,6 +374,40 @@ leaflet(data = us_states) %>%
 
 
 ```
+
+IV. Interpret the Results:
+
+In this analysis, we explore the seasonal and regional patterns of tornado occurrences in the data set spanning from 1950 to 2022. The objective is to identify if there are specific months or states that exhibit higher tornado activity. To understand the seasonal variations, we aggregate tornado occurrences by month and observe the distribution.
+
+**Seasonal Patterns:**
+
+The monthly aggregation of tornado occurrences reveals the following insights:
+
+March (mo = 3): March exhibits a substantial increase in tornado occurrences with 4,748 tornadoes. This could be attributed to the transition from winter to spring, creating favorable conditions for tornado formation.
+
+April and May (mo = 4, 5): April and May experience the highest tornado activity, with 9,792 and 15,057 tornadoes, respectively. These months typically mark the peak of tornado season, characterized by the convergence of warm and cold air masses.
+
+June (mo = 6): Tornado activity remains elevated in June with 12,615 tornadoes, indicating a continuation of favorable weather conditions for tornado formation.
+
+July to December (mo = 7-12): Tornado occurrences gradually decrease from July onwards, reaching the lowest point in December. This decline is consistent with the typical seasonal patterns, where tornadoes are less frequent in the colder months.
+
+    
+**Regional Patterns:**
+
+The regional analysis, based on the total number of tornadoes by state, provides insights into the distribution of tornado activity across different states:
+
+**Texas (TX): Texas (TX) leads in tornado occurrences with 9,267 tornadoes, reinforcing its reputation as a tornado-prone state.
+
+**Kansas (KS) and Oklahoma (OK): Kansas and Oklahoma follow closely with 4,429 and 4,146 tornadoes, respectively. The central United States, often part of "Tornado Alley," demonstrates a high tornado frequency.
+
+**Florida (FL): Florida (FL) experiences significant tornado activity, recording 3,566 tornadoes. This suggests that tornadoes are not exclusive to the central plains but can also impact southeastern states.
+
+**Nebraska (NE) and Iowa (IA): Nebraska and Iowa have notable tornado occurrences, emphasizing the broader geographic distribution of tornado-prone regions.
+    
+ 
+**Combined Analysis**
+The combined analysis of seasonal and regional patterns underscores the importance of understanding both temporal and spatial aspects of tornado occurrences. Tornadoes exhibit distinct seasonality, peaking in spring, while certain states consistently experience higher tornado activity throughout the year. This knowledge is crucial for implementing effective preparedness and mitigation strategies tailored to specific regions and times of heightened risk.
+    
 
 3.  Investigate the distribution of tornado magnitudes and their classifications.
 
