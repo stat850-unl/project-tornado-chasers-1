@@ -139,13 +139,11 @@ This output aligns where tornadoes with a F-scale rating of -9 were not modified
 
 (https://www.spc.noaa.gov/wcm/#data https://www.spc.noaa.gov/wcm/OneTor_F-scale-modifications.pdf)
 
-
-
 II. "date" and "time" Columns:
 
 Confirm that the "date" and "time" columns are correctly formatted as dates and times, respectively.
 
-```{r}     
+```{r}
 # Convert "date" to Date class
 tornado$date <- as.Date(tornado$date, format="%Y-%m-%d")
 
@@ -154,111 +152,10 @@ tornado$time <- as.POSIXct(tornado$time, format="%H:%M:%S")
 
 ```
 
+III. "st" Column:
 
-**Tornado Trends and Patterns**
+Create a separate column called "state_full" which have the full state name.
 
-1.  Examine long-term trends in tornado frequency and intensity, and identify any significant changes over the decades. Are tornadoes becoming more frequent or intense over time.
-
-Steps to examine long-term trends in tornado frequency and intensity and identify any significant changes over the decades.
-
-I. Subset the Data for Relevant Variables:
-
-Focus on the variables that are crucial for examining tornado frequency and intensity trends. These may include the year (`yr`), month (`mo`), magnitude (`mag`), and other relevant variables.
-
-```{r} 
-# Subset the data
-tornado_subset <- tornado[, c("yr", "mo", "mag")]
-```
-
-II. Aggregate Tornado Frequency by Year:
-
-Calculate the total number of tornadoes per year to examine the frequency trend.
-
-```{r} 
-# Aggregate tornado frequency by year
-tornado_frequency <- aggregate(mag ~ yr, data = tornado_subset, FUN = length)
-```
-
-III. Plot Tornado Frequency Over Time:
-
-Create a plot to visualize the trend in tornado frequency over the years.
-
-```{r} 
-# Plot tornado frequency over time
-plot(tornado_frequency$yr, tornado_frequency$mag, type = "l", xlab = "Year", ylab = "Tornado Frequency", main = "Tornado Frequency Over Time")
-```
-
-IV. Explore Tornado Intensity Trends:
-
-Examine trends in tornado intensity (magnitude) over time. And calculate the average magnitude per year.
-
-```{r} 
-# Aggregate average tornado magnitude by year
-tornado_intensity <- aggregate(mag ~ yr, data = tornado_subset, FUN = mean)
-
-```
-
-IV. Plot Tornado Intensity Over Time:**
-
-Visualize the trend in tornado intensity over the years.
-
-```{r} 
-# Plot tornado intensity over time
-plot(tornado_intensity$yr, tornado_intensity$mag, type = "l", xlab = "Year", ylab = "Average Tornado Magnitude", main = "Tornado Intensity Over Time")
-```
-
-VI. Fit Trend Lines:
-
-Fit trend lines or regression models to better understand the overall trend.
-
-```{r} 
-# Fit linear trend line for tornado frequency
-trend_frequency <- lm(mag ~ yr, data = tornado_frequency)
-
-# Fit linear trend line for tornado intensity
-trend_intensity <- lm(mag ~ yr, data = tornado_intensity)
-
-# Plot with trend lines
-plot(tornado_frequency$yr, tornado_frequency$mag, type = "l", xlab = "Year", ylab = "Tornado Frequency", main = "Tornado Frequency Over Time with Trend Line")
-abline(trend_frequency, col = "red")
-
-plot(tornado_intensity$yr, tornado_intensity$mag, type = "l", xlab = "Year", ylab = "Average Tornado Magnitude", main = "Tornado Intensity Over Time with Trend Line")
-abline(trend_intensity, col = "red")
-```
-
-VII. Interpret the Results:
-   - Examine the plotted trends and trend lines. If the slope of the trend line is positive, it indicates an increasing trend, while a negative slope indicates a decreasing trend. Assess the statistical significance of the trends.
- The linear models used for trend lines can be replaced with more complex models if needed. Additionally, consider consulting meteorological experts to gain insights into any external factors that may influence tornado trends.
-
-
-
-
-2.   Investigate seasonal and regional variations in tornado occurrences. Are there particular months or states with higher tornado activity.
-
-
-Steps to investigate seasonal and regional variations in tornado occurrences using interactive maps. 
-
-I. Prepare Data for Mapping:
-   - Subset the data to include relevant variables for mapping, such as latitude (`slat` and `elat`), longitude (`slon` and `elon`), and the month of occurrence (`mo`).
-
-```{r}
-# Subset the data
-tornado_map_data <- tornado[, c("slat", "slon", "elat", "elon", "mo","st")]
-```
-
-3. **Create Seasonal and Regional Aggregations:**
-   - Aggregate tornado occurrences by month and region (state).
-
-```{r}
-# Aggregate tornado occurrences by month
-tornado_monthly_counts <- aggregate(slat ~ mo, data = tornado_map_data, FUN = length)
-
-# Aggregate tornado occurrences by state (assuming states are available in the dataset)
-tornado_state_counts <- aggregate(slat ~ st, data = tornado_map_data, FUN = length)
-```
-
-4. **Create Interactive Maps:**
-   - Use `tmap` to create interactive maps for monthly and regional variations.
 ```{r}
 
 # Create a mapping between state abbreviations and full names
@@ -277,17 +174,155 @@ state_mapping <- c("AL" = "Alabama", "AK" = "Alaska", "AZ" = "Arizona", "AR" = "
 tornado$state_full <- state_mapping[tornado$st]
 
 # Print the first few rows to verify
-#head(tornado[, c("st", "state_full")])
+head(tornado[, c("st", "state_full")])
+```
+
+**Tornado Trends and Patterns**
+
+1.  Examine long-term trends in tornado frequency and intensity, and identify any significant changes over the decades. Are tornadoes becoming more frequent or intense over time.
+
+Steps to examine long-term trends in tornado frequency and intensity and identify any significant changes over the decades.
+
+I. Subset the Data for Relevant Variables:
+
+Focus on the variables that are crucial for examining tornado frequency and intensity trends. These may include the year (`yr`), month (`mo`), magnitude (`mag`), and other relevant variables.
+
+```{r}
+# Subset the data
+tornado_subset <- tornado[, c("yr", "mo", "mag")]
+```
+
+II. Aggregate Tornado Frequency by Year:
+
+Calculate the total number of tornadoes per year to examine the frequency trend.
+
+```{r}
+# Aggregate tornado frequency by year
+tornado_frequency <- aggregate(mag ~ yr, data = tornado_subset, FUN = length)
+```
+
+III. Plot Tornado Frequency Over Time:
+
+Create a plot to visualize the trend in tornado frequency over the years.
+
+```{r}
+# Plot tornado frequency over time
+plot(tornado_frequency$yr, tornado_frequency$mag, type = "l", xlab = "Year", ylab = "Tornado Frequency", main = "Tornado Frequency Over Time")
+```
+
+IV. Explore Tornado Intensity Trends:
+
+Examine trends in tornado intensity (magnitude) over time. And calculate the average magnitude per year.
+
+```{r}
+# Aggregate average tornado magnitude by year
+tornado_intensity <- aggregate(mag ~ yr, data = tornado_subset, FUN = mean)
+
+```
+
+IV. Plot Tornado Intensity Over Time:\*\*
+
+Visualize the trend in tornado intensity over the years.
+
+```{r}
+# Plot tornado intensity over time
+plot(tornado_intensity$yr, tornado_intensity$mag, type = "l", xlab = "Year", ylab = "Average Tornado Magnitude", main = "Tornado Intensity Over Time")
+```
+
+VI. Fit Trend Lines:
+
+Fit trend lines or regression models to better understand the overall trend.
+
+```{r}
+# Fit linear trend line for tornado frequency
+trend_frequency <- lm(mag ~ yr, data = tornado_frequency)
+
+# Fit linear trend line for tornado intensity
+trend_intensity <- lm(mag ~ yr, data = tornado_intensity)
+
+# Plot with trend lines
+plot(tornado_frequency$yr, tornado_frequency$mag, type = "l", xlab = "Year", ylab = "Tornado Frequency", main = "Tornado Frequency Over Time with Trend Line")
+abline(trend_frequency, col = "red")
+
+plot(tornado_intensity$yr, tornado_intensity$mag, type = "l", xlab = "Year", ylab = "Average Tornado Magnitude", main = "Tornado Intensity Over Time with Trend Line")
+abline(trend_intensity, col = "red")
+```
+
+VII. Interpret the Results:
+
+-   Examine the plotted trends and trend lines. If the slope of the trend line is positive, it indicates an increasing trend, while a negative slope indicates a decreasing trend. Assess the statistical significance of the trends. The linear models used for trend lines can be replaced with more complex models if needed. Additionally, consider consulting meteorological experts to gain insights into any external factors that may influence tornado trends.
+
+2.  Investigate seasonal and regional variations in tornado occurrences. Are there particular months or states with higher tornado activity.
+
+Steps to investigate seasonal and regional variations in tornado occurrences using interactive maps.
+
+I. Prepare Data for Mapping:
+
+Subset the data to include relevant variables for mapping, such as latitude (`slat` and `elat`), longitude (`slon` and `elon`), and the month of occurrence (`mo`).
+
+```{r}
+# Subset the data
+tornado_map_data <- tornado[, c("slat", "slon", "elat", "elon", "mo","st")]
+```
+
+II. Create Seasonal and Regional Aggregations:
+
+Count tornado occurrences by month and region (state).
+
+```{r}
+# Count tornado occurrences by month
+
+tornado$mo <- factor(tornado$mo, levels = 1:12, labels = month.abb)
+
+
+tornado_monthly_counts  <- tornado_map_data %>%
+  group_by(mo) %>%
+  summarise(total_tornadoes = n())
+
+print(tornado_monthly_counts )
+
 ```
 
 
+Aggregate tornado occurrences by region (state).
+
+```{r}
+
+# Calculate the total number of tornadoes by state
+tornado_state_counts  <- tornado_map_data  %>%
+  group_by(st) %>%
+  summarise(total_tornadoes = n())
+
+
+print(tornado_state_counts )
+
+```
+
+
+III. Create Interactive Maps:
+
+Use `tmap` to create interactive maps for monthly and regional variations.
+
+```{r}
+
+library(plotly)
+
+plot_ly(data = tornado_monthly_counts , x = ~mo, y = ~total_tornadoes, type = "scatter", mode = "lines+markers", 
+        name = "Tornado Count", line = list(color = "blue")) %>%
+  layout(title = "Tornado Occurrences by Month",
+         xaxis = list(title = "Month", tickmode = "array", tickvals = 1:12, ticktext =month.name),
+         yaxis = list(title = "Tornado Count"))
+
+```
+
+Create interactive map using `leaflet` to visualize state-wise tornado count
 
 ```{r}
 library(leaflet)
 library(dplyr)
 library(sf)
 
-# Assuming your data frame is named 'tornado' and contains a column 'state_full'
+
 # Create a summary data frame with tornado counts by state
 tornado_counts <- tornado %>%
   group_by(state_full) %>%
@@ -341,34 +376,7 @@ leaflet(data = us_states) %>%
 
 ```
 
-
-
-
-Note: In this example, the assumption is made that there is a dataset named `world` that contains geometries for world countries. You may need to replace it with the appropriate dataset for your region or country.
-
-Adjust the code based on the specific structure of your data and your mapping requirements. Explore additional features of the `tmap` package for more customization options and interactivity.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-3.   Investigate the distribution of tornado magnitudes and their classifications.
+3.  Investigate the distribution of tornado magnitudes and their classifications.
 
 **Tornado Impact Assessment**
 
