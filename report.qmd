@@ -250,8 +250,6 @@ abline(trend_intensity, col = "red")
 
 ```
 
-
-
 VI. Interpret the Results:
 
 **The tornado frequency over the years:**
@@ -261,13 +259,6 @@ The increasing trend in tornado frequency from 1950 to 2022, is a positive slope
 The pattern (zig-zag)indicate some variability in tornado frequency from year to year. This could be influenced by various factors, such as natural climate variability, advancements in technology and reporting, or other external factors.
 
 **The tornado intensity over the years:**
-
-
-
-
-
-
-
 
 **2. Investigate seasonal and regional variations in tornado occurrences. Are there particular months or states with higher tornado activity.**
 
@@ -427,8 +418,6 @@ The combined analysis of seasonal and regional patterns underscores the importan
 
 **1. Assess the human impact of tornadoes by analyzing variables such as injuries, fatalities.**
 
-Certainly! To investigate the correlation between the magnitude of tornadoes (using the F-scale) and the extent of injuries, fatalities, or losses, you can follow these steps:
-
 I. Subset Data for Relevant Variables
 
 ```{r}
@@ -452,9 +441,7 @@ total_impact_by_year
 
 ```
 
-
 Generate an interactive line plot to visualize the trends in fatalities and injuries over the years.
-
 
 ```{r}
 
@@ -475,12 +462,9 @@ plotly_line_plot
 
 ```
 
-
 III. Identify tornado Injuries and Fatalities by EF rating:
 
-
 Summarize the total number of injuries and fatalities by magnitude (mag) while excluding the value -9 to get EF rating.
-
 
 ```{r}
 
@@ -493,11 +477,7 @@ total_impact_by_mag
 
 ```
 
-
 Generate an interactive bar plot to visualize the total injuries and fatalities for each EF rating.
-
-
-
 
 ```{r}
 
@@ -524,9 +504,7 @@ plotly_bar_inj_fat
 
 ```
 
-
 IV. Identify tornado Injuries and Fatalities by State and visualizing:
-
 
 Count no of tornado Injuries and Fatalities by State
 
@@ -537,8 +515,6 @@ total_impact_by_st <- tornado_impact_subset %>%
   summarise(total_injuries = sum(inj), total_fatalities = sum(fat))
 total_impact_by_st
 ```
-
-
 
 Create interactive map using `leaflet` to visualize state-wise tornado Injuries and Fatalities
 
@@ -583,17 +559,14 @@ leaflet(data = us_states) %>%
 
 ```
 
-
-
 V. Interpret the Results:
-
 
 **Trends in Tornado Injuries and Fatalities Over the Years:**
 
 The interactive line plot shows the trends in tornado injuries and fatalities over the years.
 
 Both injuries and fatalities have seen fluctuations, with some years experiencing higher counts than others implies the variability, indicating that tornado impacts can vary from year to year.
-   
+
 The plot allows users to hover over data points to get specific counts for each year.
 
 **Tornado Injuries and Fatalities by EF Rating:**
@@ -614,9 +587,189 @@ Users can click on each state to view the tornado injuries and fatalities counts
 
 
 
+**2. Assess the economic impact of tornadoes by analyzing variables such as property and crop losses.**
+
+I. Subset Data for Relevant Variables:
+
+Select variables related to economic impact, such as property losses (loss), crop losses (closs), and  other relevant economic indicators.
+
+```{r}
+# Subset data for relevant economic impact variables
+tornado_economic_subset <- tornado[, c("yr", "state_full", "st", "loss", "closs")]
+
+```
 
 
-**2. Assess the economic  impact of tornadoes by analyzing variables such as property and crop losses.**
+II. Aggregate Economic Impact by Year:
+
+Calculate the total property and crop losses for each year to examine the overall economic impact.
+
+```{r}
+
+# Aggregate economic impact by year
+total_economic_impact_by_year <- aggregate(cbind(loss, closs) ~ yr, data = tornado_economic_subset, sum)
+total_economic_impact_by_year$total_loss_yr <- total_economic_impact_by_year$loss + total_economic_impact_by_year$closs
+total_economic_impact_by_year
+
+
+
+```
+
+Create visualizations, using a line plots , to show the trends in property and crop losses over the years.
+
+```{r}
+
+# Create a line plot for economic impact over time
+plot_economic_impact <- ggplot(total_economic_impact_by_year, aes(x = yr)) +
+  geom_line(aes(y = loss, color = "Property Loss"), alpha = 0.8) +
+  geom_line(aes(y = closs, color = "Crop Loss"), alpha = 0.8) +
+  #geom_line(aes(y = total_loss_yr, color = "Total Loss"), alpha = 0.8) +
+  labs(title = "Tornado Economic Impact Over Time",
+       x = "Year",
+       y = "Losses",
+       color = "Loss Type") +
+  scale_color_manual(values = c("Property Loss" = "blue", "Crop Loss" = "green", "Total Loss" = "red")) +
+  theme_minimal()
+
+plot_economic_impact
+
+
+
+```
+
+
+```{r}
+# Create a grouped bar plot for economic impact over time
+plot_economic_impact_bar <- ggplot(total_economic_impact_by_year, aes(x = as.factor(yr))) +
+  geom_bar(aes(y = loss, fill = "Property Loss"), position = "dodge", stat = "identity", width = 0.7) +
+  geom_bar(aes(y = closs, fill = "Crop Loss"), position = "dodge", stat = "identity", width = 0.7) +
+  geom_bar(aes(y = total_loss_yr, fill = "Total Loss"), position = "dodge", stat = "identity", width = 0.7) +
+  labs(title = "Tornado Economic Impact Over Time",
+       x = "Year",
+       y = "Losses",
+       fill = "Loss Type") +
+  scale_fill_manual(values = c("Property Loss" = "blue", "Crop Loss" = "green", "Total Loss" = "red")) +
+  theme_minimal() +
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        plot.title = element_text(size = 16, face = "bold"))
+
+plot_economic_impact_bar
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+III. Assess Economic Impact by State:
+
+Calculate the total property and crop losses for each state and create new colmn for total loss to assess the economic impact on a regional level.
+
+```{r}
+# Aggregate economic impact by state with the sum of loss and closs
+total_economic_impact_by_state <- aggregate(cbind(loss, closs) ~ state_full, data = tornado_economic_subset, sum)
+total_economic_impact_by_state$total_loss <- total_economic_impact_by_state$loss + total_economic_impact_by_state$closs
+
+total_economic_impact_by_state
+
+
+```
+
+
+Use visualizations, such as bar plots or maps, to show the economic impact by state.
+
+```{r}
+
+# Create a bar plot for economic impact by state
+plot_economic_impact_by_state <- ggplot(total_economic_impact_by_state, aes(x = reorder(state_full, -loss), y = loss)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(title = "Tornado Economic Impact by State",
+       x = "State",
+       y = "Property Loss") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+plot_economic_impact_by_state
+
+
+```
+
+
+```{r}
+
+
+library(leaflet)
+library(dplyr)
+library(sf)
+library(usmap)
+library(maps)  
+
+total_economic_impact_by_state <- aggregate(cbind(loss, closs) ~ state_full, data = tornado_economic_subset, sum) 
+total_economic_impact_by_state$total_loss <- total_economic_impact_by_state$loss + total_economic_impact_by_state$closs
+
+# Load a data frame mapping state names to state abbreviations
+state_abbreviations <- data.frame(
+  state_full = state.name,
+  state_abbr = state.abb
+)
+
+# Merge tornado counts with state abbreviations
+total_economic_impact_by_state <- merge(total_economic_impact_by_state, state_abbreviations, by = "state_full")
+
+# Load U.S. state map data
+us_states <- st_as_sf(map("state", plot = FALSE, fill = TRUE))
+
+# Check and fix invalid geometries
+us_states1 <- st_make_valid(us_states)
+# Convert 'ID' column in 'us_states1' to lowercase
+us_states1$ID <- tolower(us_states1$ID)
+
+# Convert 'state_full' column in 'tornado_counts' to lowercase
+total_economic_impact_by_state$state_full <- tolower(total_economic_impact_by_state$state_full)
+
+# Merge tornado counts with U.S. state map (case-insensitive)
+us_states <- merge(us_states1, total_economic_impact_by_state, by.x = "ID", by.y = "state_full", all.x = TRUE)
+
+# Create an interactive map
+# Create an interactive map with a different fill color
+leaflet(data = us_states) %>%
+  addProviderTiles("CartoDB.Voyager") %>%
+  addPolygons(
+    fillColor = ~colorQuantile("YlOrRd", us_states$total_loss)(us_states$total_loss),
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
+    label = ~paste(us_states$ID,
+                   "Total Loss:", us_states$total_loss,
+                   "Property Loss:", us_states$loss,
+                   "Crop Loss:", us_states$closs)
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    pal = colorQuantile("YlOrRd", us_states$tornado_count),
+    values = us_states$total_loss,
+    title = "Total loss Count",
+    opacity = 0.7
+  )
+
+
+
+```
+
+
+```
+
+
+
 
 
 **3. Explore the spatial distribution of tornado impact, focusing on the geographical areas most affected by these natural disasters.**
