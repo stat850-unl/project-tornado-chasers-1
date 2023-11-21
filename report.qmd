@@ -30,21 +30,17 @@ if (!"emo" %in% installed.packages()) {
 
 ## Introduction
 
-Introduce your dataset and basic questions for exploration. Explain any unique approaches you will take or any interesting features of your dataset that you have to overcome. Cite the source of your dataset, and briefly discuss how it was collected.
-
-Discuss the variables in the dataset and if there are anomalies in the variables, provide some visual assessment of the anomalies and explain how they may have arisen. You should cover most of the information in your proposal data section, but should primarily use paragraphs and not lists/tables (the exception may be a list of e.g. items which were measured).
-
-A tornado is a rapidly rotating column of air that extends from a thunderstorm to the ground, forming a funnel-shaped cloud, known as a tornado vortex (Tornadoes.(n.d.)). These violent windstorms are characterized by their destructive power, often causing severe damage to structures, vehicles, and natural environments. So this most destructive and fascinating natural phenomena that occur in the United States, with the power to wreak havoc on communities, devastate landscapes, and claim lives. They are often referred to as nature's most violent storms due to their ferocity and unpredictability. In the USA, tornadoes have long been a subject of both fear and awe, prompting researchers, meteorologists, and emergency response teams to seek a deeper understanding of these formidable weather events.
+A tornado is a rapidly rotating column of air that extends from a thunderstorm to the ground, forming a funnel-shaped cloud, known as a tornado vortex ([Tornadoes.(n.d.)](https://www.nssl.noaa.gov/research/tornadoes/)). These violent windstorms are characterized by their destructive power, often causing severe damage to structures, vehicles, and natural environments. So this most destructive and fascinating natural phenomena that occur in the United States, with the power to wreak havoc on communities, devastate landscapes, and claim lives. They are often referred to as nature's most violent storms due to their ferocity and unpredictability. In the USA, tornadoes have long been a subject of both fear and awe, prompting researchers, meteorologists, and emergency response teams to seek a deeper understanding of these formidable weather events.
 
 The interest in exploring this extensive tornado data set arises from the profound impact that tornadoes have on American society and the natural environment. Tornadoes are a recurring and unpredictable threat, causing significant economic losses and, more importantly, putting human lives at risk. As a researcher, I am driven by the need to better understand the behavior and patterns of tornadoes to mitigate their destructive potential and improve our ability to predict and respond to them.
 
 The opportunity to delve into a comprehensive data set, spanning more than seven decades, is both exciting and promising. It allows for a deep exploration of trends, anomalies, and potential patterns in tornado occurrence and behavior, which can inform disaster preparedness, risk assessment, and policy development.
 
-Data
+## Data
 
-Source
+### Source
 
-The data source for the project is comes from - TidyTuesday Archive data project, and the data set used is the Tornado Data.
+The data source for the project is comes from - [TidyTuesday Archive](https://github.com/rfordatascience/tidytuesday) data project, and the data set used is the [Tornado Data](https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv).
 
 ```{r, echo = F,message = F, warning = F}
 
@@ -54,13 +50,22 @@ library(tidyverse)
 
 tornado <-read.csv("https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv")
 
+#print the data information
+str(tornado)
+
 ```
 
-Description
+### Description
 
 This data set provides comprehensive information about tornadoes, including various attributes such as tornado numbers, years, months, days, dates, times, geographical coordinates, magnitudes, injuries, fatalities, property losses, and more. The data offers insights into the characteristics and impacts of tornadoes that have occurred from 1950 to 2022.
 
-It is sourced from NOAA's National Weather Service Storm Prediction Center Severe Weather Maps, Graphics, and Data Page (Storm Prediction).This offers a rich resource for the analysis and study of tornado occurrences and their impacts, enabling researchers and meteorologists to gain insights into the patterns and characteristics of tornadoes spanning over seven decades.
+It is sourced from NOAA's National Weather Service Storm Prediction Center Severe Weather Maps, Graphics, and Data Page ([Storm Prediction](https://www.spc.noaa.gov/wcm/)).This offers a rich resource for the analysis and study of tornado occurrences and their impacts, enabling researchers and meteorologists to gain insights into the patterns and characteristics of tornadoes spanning over seven decades.
+
+## Project Goals
+
+The [Tornado Data](https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv) set from NOAA, covering the years 1950 to 2022, is fascinating because it holds the potential to reveal valuable insights.
+
+The goals of this project are to utilize this data to explore and analyze several key aspects related to tornado occurrences in the United States. Here are the specific goals and the intriguing subjects we hope to investigate.
 
 ## Methods
 
@@ -74,9 +79,9 @@ library(ggplot2)
 
 ```
 
-**Data Cleaning and Pre-processing**
+### Data Cleaning and Pre-processing
 
-1.  Conduct data cleaning to handle missing values, outliers, and inconsistencies in the tornado data set, ensuring that the data is of high quality for analysis.
+**1. Conduct data cleaning to handle missing values, outliers, and inconsistencies in the tornado data set, ensuring that the data is of high quality for analysis.**
 
 -   Print the data information
 
@@ -113,18 +118,21 @@ I. "mag" (Magnitude) Column:
 
 The minimum value is -9, which may be inconsistent since magnitude is typically a non-negative value.
 
-Print rows which have negative magnitude.
+Identify rows which have negative magnitude.
 
 ```{r}
 # Identify rows where magnitude is negative
 
 negative_mag_rows <- tornado[tornado$mag < 0, ] 
-print(negative_mag_rows[, c("om", "yr", "mo", "dy", "mag","fc")])
+mag_neg<-(negative_mag_rows[, c("om", "yr", "mo", "dy", "mag","fc")])
+
+
+num_rows <- nrow(mag_neg)
+
+print(paste('No of rows where magnitude is negative:', num_rows))
 
 
 ```
-
-
 
 Identify years where magnitude is negative.
 
@@ -179,9 +187,9 @@ tornado$state_full <- state_mapping[tornado$st]
 head(tornado[, c("st", "state_full")])
 ```
 
-**Tornado Trends and Patterns**
+### Tornado Trends and Patterns
 
-1.  Examine long-term trends in tornado frequency and intensity, and identify any significant changes over the decades. Are tornadoes becoming more frequent or intense over time.
+**1. Examine long-term trends in tornado frequency and intensity, and identify any significant changes over the decades. Are tornadoes becoming more frequent or intense over time.**
 
 Steps to examine long-term trends in tornado frequency and intensity and identify any significant changes over the decades.
 
@@ -208,8 +216,12 @@ III. Plot Tornado Frequency Over Time:
 Create a plot to visualize the trend in tornado frequency over the years.
 
 ```{r}
-# Plot tornado frequency over time
-plot(tornado_frequency$yr, tornado_frequency$mag, type = "l", xlab = "Year", ylab = "Tornado Frequency", main = "Tornado Frequency Over Time")
+# Fit linear trend line for tornado frequency
+trend_frequency <- lm(mag ~ yr, data = tornado_frequency)
+
+# Plot tornado frequency over time with trend lines
+plot(tornado_frequency$yr, tornado_frequency$mag, type = "l", xlab = "Year", ylab = "Tornado Frequency", main = "Tornado Frequency Over Time with Trend Line")
+abline(trend_frequency, col = "red")
 ```
 
 IV. Explore Tornado Intensity Trends:
@@ -227,34 +239,35 @@ IV. Plot Tornado Intensity Over Time:\*\*
 Visualize the trend in tornado intensity over the years.
 
 ```{r}
-# Plot tornado intensity over time
-plot(tornado_intensity$yr, tornado_intensity$mag, type = "l", xlab = "Year", ylab = "Average Tornado Magnitude", main = "Tornado Intensity Over Time")
-```
-
-VI. Fit Trend Lines:
-
-Fit trend lines or regression models to better understand the overall trend.
-
-```{r}
-# Fit linear trend line for tornado frequency
-trend_frequency <- lm(mag ~ yr, data = tornado_frequency)
-
 # Fit linear trend line for tornado intensity
 trend_intensity <- lm(mag ~ yr, data = tornado_intensity)
 
-# Plot with trend lines
-plot(tornado_frequency$yr, tornado_frequency$mag, type = "l", xlab = "Year", ylab = "Tornado Frequency", main = "Tornado Frequency Over Time with Trend Line")
-abline(trend_frequency, col = "red")
-
+# Plot tornado intensity over time
 plot(tornado_intensity$yr, tornado_intensity$mag, type = "l", xlab = "Year", ylab = "Average Tornado Magnitude", main = "Tornado Intensity Over Time with Trend Line")
 abline(trend_intensity, col = "red")
+
 ```
 
-VII. Interpret the Results:
 
--   Examine the plotted trends and trend lines. If the slope of the trend line is positive, it indicates an increasing trend, while a negative slope indicates a decreasing trend. Assess the statistical significance of the trends. The linear models used for trend lines can be replaced with more complex models if needed. Additionally, consider consulting meteorological experts to gain insights into any external factors that may influence tornado trends.
 
-2.  Investigate seasonal and regional variations in tornado occurrences. Are there particular months or states with higher tornado activity.
+VI. Interpret the Results:
+
+**The tornado frequency over the years:**
+
+The increasing trend in tornado frequency from 1950 to 2022, is a positive slope of the trend line in the plot, suggests a general rise in the number of reported tornadoes over the years.
+
+The pattern (zig-zag)indicate some variability in tornado frequency from year to year. This could be influenced by various factors, such as natural climate variability, advancements in technology and reporting, or other external factors.
+
+**The tornado intensity over the years:**
+
+
+
+
+
+
+
+
+**2. Investigate seasonal and regional variations in tornado occurrences. Are there particular months or states with higher tornado activity.**
 
 Steps to investigate seasonal and regional variations in tornado occurrences using interactive maps.
 
@@ -391,35 +404,104 @@ June (mo = 6): Tornado activity remains elevated in June with 12,615 tornadoes, 
 
 July to December (mo = 7-12): Tornado occurrences gradually decrease from July onwards, reaching the lowest point in December. This decline is consistent with the typical seasonal patterns, where tornadoes are less frequent in the colder months.
 
-    
 **Regional Patterns:**
 
 The regional analysis, based on the total number of tornadoes by state, provides insights into the distribution of tornado activity across different states:
 
-**Texas (TX): Texas (TX) leads in tornado occurrences with 9,267 tornadoes, reinforcing its reputation as a tornado-prone state.
+Texas (TX): Texas (TX) leads in tornado occurrences with 9,267 tornadoes, reinforcing its reputation as a tornado-prone state.
 
-**Kansas (KS) and Oklahoma (OK): Kansas and Oklahoma follow closely with 4,429 and 4,146 tornadoes, respectively. The central United States, often part of "Tornado Alley," demonstrates a high tornado frequency.
+Kansas (KS) and Oklahoma (OK): Kansas and Oklahoma follow closely with 4,429 and 4,146 tornadoes, respectively. The central United States, often part of "Tornado Alley," demonstrates a high tornado frequency.
 
-**Florida (FL): Florida (FL) experiences significant tornado activity, recording 3,566 tornadoes. This suggests that tornadoes are not exclusive to the central plains but can also impact southeastern states.
+Florida (FL): Florida (FL) experiences significant tornado activity, recording 3,566 tornadoes. This suggests that tornadoes are not exclusive to the central plains but can also impact southeastern states.
 
-**Nebraska (NE) and Iowa (IA): Nebraska and Iowa have notable tornado occurrences, emphasizing the broader geographic distribution of tornado-prone regions.
-    
- 
+Nebraska (NE) and Iowa (IA): Nebraska and Iowa have notable tornado occurrences, emphasizing the broader geographic distribution of tornado-prone regions.
+
 **Combined Analysis**
+
 The combined analysis of seasonal and regional patterns underscores the importance of understanding both temporal and spatial aspects of tornado occurrences. Tornadoes exhibit distinct seasonality, peaking in spring, while certain states consistently experience higher tornado activity throughout the year. This knowledge is crucial for implementing effective preparedness and mitigation strategies tailored to specific regions and times of heightened risk.
-    
 
-3.  Investigate the distribution of tornado magnitudes and their classifications.
+### Tornado Impact Assessment
 
-**Tornado Impact Assessment**
+**1. Assess the economic and human impact of tornadoes by analyzing variables such as injuries, fatalities, property and crop losses.**
 
--   Assess the economic and human impact of tornadoes by analyzing variables such as injuries, fatalities, property and crop losses.
+Certainly! To investigate the correlation between the magnitude of tornadoes (using the F-scale) and the extent of injuries, fatalities, or losses, you can follow these steps:
 
--   Explore the spatial distribution of tornado impact, focusing on the geographical areas most affected by these natural disasters.
+### Step 1: Subset Data for Relevant Variables
 
-**Developing Shiny Application**
+```{r}
+# Subset data for relevant variables
+subset_data <- tornado[, c("mag", "inj", "fat", "loss", "closs")]
 
--   The Shiny application will be built to import and utilize the tornado data set.
+# Check for missing values
+summary(subset_data)
+```
+
+### Step 2: Filter Data for Non-Negative Magnitudes
+
+```{r}
+# Filter out rows with non-negative magnitudes
+filtered_data <- subset_data[subset_data$mag >= 0, ]
+```
+
+### Step 3: Calculate Correlation Coefficients
+
+```{r}
+# Calculate correlation coefficients
+cor_mag_injuries <- cor(filtered_data$mag, filtered_data$inj, method = "pearson")
+cor_mag_fatalities <- cor(filtered_data$mag, filtered_data$fat, method = "pearson")
+cor_mag_losses <- cor(filtered_data$mag, filtered_data$loss, method = "pearson")
+cor_mag_crop_losses <- cor(filtered_data$mag, filtered_data$closs, method = "pearson")
+
+# Print correlation coefficients
+print(paste("Correlation between Magnitude and Injuries:", round(cor_mag_injuries, 3)))
+print(paste("Correlation between Magnitude and Fatalities:", round(cor_mag_fatalities, 3)))
+print(paste("Correlation between Magnitude and Property Losses:", round(cor_mag_losses, 3)))
+print(paste("Correlation between Magnitude and Crop Losses:", round(cor_mag_crop_losses, 3)))
+```
+
+### Step 4: Visualize the Relationships
+
+```{r}
+# Create scatter plots to visualize relationships
+par(mfrow = c(2, 2))
+plot(filtered_data$mag, filtered_data$inj, main = "Magnitude vs. Injuries", xlab = "Magnitude", ylab = "Injuries")
+plot(filtered_data$mag, filtered_data$fat, main = "Magnitude vs. Fatalities", xlab = "Magnitude", ylab = "Fatalities")
+plot(filtered_data$mag, filtered_data$loss, main = "Magnitude vs. Property Losses", xlab = "Magnitude", ylab = "Property Losses")
+plot(filtered_data$mag, filtered_data$closs, main = "Magnitude vs. Crop Losses", xlab = "Magnitude", ylab = "Crop Losses")
+```
+
+### Step 5: Interpretation
+
+Interpret the correlation coefficients and visualizations. A positive correlation suggests that as the magnitude of tornadoes increases, the corresponding variable (injuries, fatalities, losses) also tends to increase. A negative correlation suggests the opposite.
+
+These steps will help you assess whether there's a statistically significant correlation between tornado magnitude and the impact variables. Adjust the analysis based on the specific nuances of your dataset and research questions.
+
+### Step 3: Visualize the Impact
+
+```{r}
+# Create boxplots to visualize the distribution of injuries, fatalities, property losses, and crop losses
+par(mfrow = c(2, 2))
+boxplot(tornado$inj, main = "Injuries", ylab = "Number of Injuries")
+boxplot(tornado$fat, main = "Fatalities", ylab = "Number of Fatalities")
+boxplot(tornado$loss, main = "Property Losses", ylab = "Property Loss ($)")
+boxplot(tornado$closs, main = "Crop Losses", ylab = "Crop Loss ($)")
+```
+
+### Step 4: Interpretation
+
+Interpret the results obtained from the calculations and visualizations. Look for patterns, outliers, and areas with the highest impact. Consider creating maps or geographical visualizations to identify regions most affected by tornadoes.
+
+### Step 5: Further Analysis
+
+Consider conducting additional analyses, such as correlation analysis, to explore relationships between variables. For example, you might want to investigate if there's a correlation between the magnitude of tornadoes and the extent of injuries, fatalities, or losses.
+
+Adjust the analysis based on the specific questions you want to answer and the insights you seek from the data.
+
+**2. Explore the spatial distribution of tornado impact, focusing on the geographical areas most affected by these natural disasters.**
+
+## Developing Shiny Application
+
+**1. The Shiny application will be built to import and utilize the tornado data set.**
 
 ### Data Analyzing Approach
 
