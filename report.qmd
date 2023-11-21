@@ -76,6 +76,8 @@ library(tidyverse)
 library(stringr)
 library(tmap)
 library(ggplot2)
+library(usmap)
+library(showtext)
 
 ```
 
@@ -365,6 +367,7 @@ tornado_counts$state_full <- tolower(tornado_counts$state_full)
 # Merge tornado counts with U.S. state map (case-insensitive)
 us_states <- merge(us_states1, tornado_counts, by.x = "ID", by.y = "state_full", all.x = TRUE)
 
+
 # Create an interactive map
 # Create an interactive map with a different fill color
 leaflet(data = us_states) %>%
@@ -373,7 +376,7 @@ leaflet(data = us_states) %>%
     fillColor = ~colorQuantile("YlOrRd", us_states$tornado_count)(us_states$tornado_count),
     fillOpacity = 0.7,
     highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
-    label = ~paste(state_abbreviations$state_full,
+    label = ~paste(us_states$ID,
                    "Tornado Count:", tornado_count)
   ) %>%
   addLegend(
@@ -422,82 +425,154 @@ The combined analysis of seasonal and regional patterns underscores the importan
 
 ### Tornado Impact Assessment
 
-**1. Assess the economic and human impact of tornadoes by analyzing variables such as injuries, fatalities, property and crop losses.**
+**1. Assess the human impact of tornadoes by analyzing variables such as injuries, fatalities.**
 
 Certainly! To investigate the correlation between the magnitude of tornadoes (using the F-scale) and the extent of injuries, fatalities, or losses, you can follow these steps:
 
-### Step 1: Subset Data for Relevant Variables
+I. Subset Data for Relevant Variables
 
 ```{r}
 # Subset data for relevant variables
-subset_data <- tornado[, c("mag", "inj", "fat", "loss", "closs")]
+tornado_impact_subset <- tornado[, c("yr","state_full","st","mag", "inj", "fat", "loss", "closs","f1",
+                                     "f2","f3","f4","stf")]
 
 # Check for missing values
-summary(subset_data)
+#summary(tornado_impact_subset)
 ```
 
-### Step 2: Filter Data for Non-Negative Magnitudes
+II. Identify tornado Injuries and Fatalities by year:
+
+Summarize the total number of injuries and fatalities for each year.
 
 ```{r}
-# Filter out rows with non-negative magnitudes
-filtered_data <- subset_data[subset_data$mag >= 0, ]
+
+# Aggregate injuries and fatalities by year
+total_impact_by_year <- aggregate(cbind(inj, fat) ~ yr, data = tornado_impact_subset, sum)
+total_impact_by_year
+
 ```
 
-### Step 3: Calculate Correlation Coefficients
+
+Generate a line plot to visualize the trends in fatalities and injuries over the years.
 
 ```{r}
-# Calculate correlation coefficients
-cor_mag_injuries <- cor(filtered_data$mag, filtered_data$inj, method = "pearson")
-cor_mag_fatalities <- cor(filtered_data$mag, filtered_data$fat, method = "pearson")
-cor_mag_losses <- cor(filtered_data$mag, filtered_data$loss, method = "pearson")
-cor_mag_crop_losses <- cor(filtered_data$mag, filtered_data$closs, method = "pearson")
 
-# Print correlation coefficients
-print(paste("Correlation between Magnitude and Injuries:", round(cor_mag_injuries, 3)))
-print(paste("Correlation between Magnitude and Fatalities:", round(cor_mag_fatalities, 3)))
-print(paste("Correlation between Magnitude and Property Losses:", round(cor_mag_losses, 3)))
-print(paste("Correlation between Magnitude and Crop Losses:", round(cor_mag_crop_losses, 3)))
+plot(total_impact_by_year$yr, total_impact_by_year$inj, type = "l", col = "blue", xlab = "Year", ylab = "Count", main = "Tornado Injuries and Fatalities Over Years")
+
+lines(total_impact_by_year$yr, total_impact_by_year$fat, type = "l", col = "red")
+
+legend("topright", legend = c("Injuries", "Fatalities"), col = c("blue", "red"), lty = 1, bty = "n")
+# Adjust the plot margins to make room for the legend
+#par(mar = c(5, 5, 4, 5) + 0.1)
+
+
 ```
 
-### Step 4: Visualize the Relationships
+
+III. Identify tornado Injuries and Fatalities by EF rating:
+
+
+Summarize the total number of injuries and fatalities by magnitude (mag) while excluding the value -9 to get EF rating.
+
 
 ```{r}
-# Create scatter plots to visualize relationships
-par(mfrow = c(2, 2))
-plot(filtered_data$mag, filtered_data$inj, main = "Magnitude vs. Injuries", xlab = "Magnitude", ylab = "Injuries")
-plot(filtered_data$mag, filtered_data$fat, main = "Magnitude vs. Fatalities", xlab = "Magnitude", ylab = "Fatalities")
-plot(filtered_data$mag, filtered_data$loss, main = "Magnitude vs. Property Losses", xlab = "Magnitude", ylab = "Property Losses")
-plot(filtered_data$mag, filtered_data$closs, main = "Magnitude vs. Crop Losses", xlab = "Magnitude", ylab = "Crop Losses")
+
+# Aggregate injuries and fatalities by magnitude (excluding mag == -9)
+total_impact_by_mag <- tornado_impact_subset %>%
+  filter(mag != -9) %>%
+  group_by(mag) %>%
+  summarise(total_injuries = sum(inj), total_fatalities = sum(fat))
+
+
 ```
 
-### Step 5: Interpretation
 
-Interpret the correlation coefficients and visualizations. A positive correlation suggests that as the magnitude of tornadoes increases, the corresponding variable (injuries, fatalities, losses) also tends to increase. A negative correlation suggests the opposite.
-
-These steps will help you assess whether there's a statistically significant correlation between tornado magnitude and the impact variables. Adjust the analysis based on the specific nuances of your dataset and research questions.
-
-### Step 3: Visualize the Impact
+Generate a bar plot to visualize the total injuries and fatalities for each EF rating.
 
 ```{r}
-# Create boxplots to visualize the distribution of injuries, fatalities, property losses, and crop losses
-par(mfrow = c(2, 2))
-boxplot(tornado$inj, main = "Injuries", ylab = "Number of Injuries")
-boxplot(tornado$fat, main = "Fatalities", ylab = "Number of Fatalities")
-boxplot(tornado$loss, main = "Property Losses", ylab = "Property Loss ($)")
-boxplot(tornado$closs, main = "Crop Losses", ylab = "Crop Loss ($)")
+# Create a bar plot for injuries and fatalities by magnitude
+ggplot(total_impact_by_mag, aes(x = factor(mag))) +
+  geom_bar(aes(y = total_fatalities, fill = "Fatalities"), stat = "identity", position = "dodge", width = 0.7) +
+  geom_bar(aes(y = total_injuries, fill = "Injuries"), stat = "identity", position = "dodge", width = 0.5) +
+  labs(title = "Tornado Injuries and Fatalities by EF Rating",
+       x = "EF Rating ",
+       y = "Count") +
+  scale_fill_manual(values = c("blue", "red"), name = "Impact Type") +
+  theme_minimal() +
+  #theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  guides(fill = guide_legend(title = "Impact Type"))
+
+
+
 ```
 
-### Step 4: Interpretation
 
-Interpret the results obtained from the calculations and visualizations. Look for patterns, outliers, and areas with the highest impact. Consider creating maps or geographical visualizations to identify regions most affected by tornadoes.
+IV. Identify tornado Injuries and Fatalities by State and visualizing:
 
-### Step 5: Further Analysis
 
-Consider conducting additional analyses, such as correlation analysis, to explore relationships between variables. For example, you might want to investigate if there's a correlation between the magnitude of tornadoes and the extent of injuries, fatalities, or losses.
+Count no of tornado Injuries and Fatalities by State
 
-Adjust the analysis based on the specific questions you want to answer and the insights you seek from the data.
+```{r}
+# Create a summary data frame with tornado Injuries and Fatalities by State 
+total_impact_by_st <- tornado_impact_subset %>%
+  group_by(state_full) %>%
+  summarise(total_injuries = sum(inj), total_fatalities = sum(fat))
+total_impact_by_st
+```
 
-**2. Explore the spatial distribution of tornado impact, focusing on the geographical areas most affected by these natural disasters.**
+
+
+Create interactive map using `leaflet` to visualize state-wise tornado Injuries and Fatalities
+
+```{r}
+
+library(leaflet)
+library(dplyr)
+library(sf)
+library(usmap)
+library(maps)  
+
+# Create a summary data frame with tornado Injuries and Fatalities by State 
+total_impact_by_st <- tornado_impact_subset %>%
+  group_by(state_full) %>%
+  summarise(total_injuries = sum(inj), total_fatalities = sum(fat))
+
+
+state_abbreviations <- data.frame(
+  state_full = state.name,
+  state_abbr = state.abb
+)
+
+
+total_impact_by_st <- merge(total_impact_by_st, state_abbreviations, by = "state_full")
+
+us_states <- st_as_sf(map("state", plot = FALSE, fill = TRUE))
+us_states1 <- st_make_valid(us_states)
+us_states1$ID <- tolower(us_states1$ID)
+total_impact_by_st$state_full <- tolower(total_impact_by_st$state_full)
+
+us_states <- merge(us_states1, total_impact_by_st, by.x = "ID", by.y = "state_full", all.x = TRUE)
+
+leaflet(data = us_states) %>%
+  addProviderTiles("CartoDB.Voyager") %>%
+  addPolygons(
+    highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
+    label = ~paste(us_states$ID,
+                   "Tornado Injuries:", us_states$total_injuries,
+                   "Tornado Fatalities:", us_states$total_fatalities)
+  ) 
+  
+
+```
+
+
+
+
+
+**2. Assess the economic  impact of tornadoes by analyzing variables such as property and crop losses.**
+
+
+**3. Explore the spatial distribution of tornado impact, focusing on the geographical areas most affected by these natural disasters.**
 
 ## Developing Shiny Application
 
