@@ -453,17 +453,24 @@ total_impact_by_year
 ```
 
 
-Generate a line plot to visualize the trends in fatalities and injuries over the years.
+Generate an interactive line plot to visualize the trends in fatalities and injuries over the years.
+
 
 ```{r}
 
-plot(total_impact_by_year$yr, total_impact_by_year$inj, type = "l", col = "blue", xlab = "Year", ylab = "Count", main = "Tornado Injuries and Fatalities Over Years")
+library(plotly)
 
-lines(total_impact_by_year$yr, total_impact_by_year$fat, type = "l", col = "red")
 
-legend("topright", legend = c("Injuries", "Fatalities"), col = c("blue", "red"), lty = 1, bty = "n")
-# Adjust the plot margins to make room for the legend
-#par(mar = c(5, 5, 4, 5) + 0.1)
+plotly_line_plot <- plot_ly() %>%
+  add_lines(x = ~total_impact_by_year$yr, y = ~total_impact_by_year$inj, name = 'Injuries', line = list(color = 'blue')) %>%
+  add_lines(x = ~total_impact_by_year$yr, y = ~total_impact_by_year$fat, name = 'Fatalities', line = list(color = 'red')) %>%
+  layout(title = "Tornado Injuries and Fatalities Over Years",
+         xaxis = list(title = "Year"),
+         yaxis = list(title = "Count"),
+         showlegend = TRUE,
+         legend = list(x = 1, y = 1.1))
+
+plotly_line_plot
 
 
 ```
@@ -482,26 +489,37 @@ total_impact_by_mag <- tornado_impact_subset %>%
   filter(mag != -9) %>%
   group_by(mag) %>%
   summarise(total_injuries = sum(inj), total_fatalities = sum(fat))
-
+total_impact_by_mag
 
 ```
 
 
-Generate a bar plot to visualize the total injuries and fatalities for each EF rating.
+Generate an interactive bar plot to visualize the total injuries and fatalities for each EF rating.
+
+
+
 
 ```{r}
+
+library(tidyverse)
+library(plotly)
+
 # Create a bar plot for injuries and fatalities by magnitude
-ggplot(total_impact_by_mag, aes(x = factor(mag))) +
+plotly_bar_inj_fat <- ggplot(total_impact_by_mag, aes(x = factor(mag))) +
   geom_bar(aes(y = total_fatalities, fill = "Fatalities"), stat = "identity", position = "dodge", width = 0.7) +
   geom_bar(aes(y = total_injuries, fill = "Injuries"), stat = "identity", position = "dodge", width = 0.5) +
   labs(title = "Tornado Injuries and Fatalities by EF Rating",
-       x = "EF Rating ",
+       x = "EF Rating",
        y = "Count") +
   scale_fill_manual(values = c("blue", "red"), name = "Impact Type") +
   theme_minimal() +
   #theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   guides(fill = guide_legend(title = "Impact Type"))
 
+# Convert ggplot to Plotly
+plotly_bar_inj_fat  <- ggplotly(plotly_bar_inj_fat )
+
+plotly_bar_inj_fat 
 
 
 ```
@@ -564,6 +582,35 @@ leaflet(data = us_states) %>%
   
 
 ```
+
+
+
+V. Interpret the Results:
+
+
+**Trends in Tornado Injuries and Fatalities Over the Years:**
+
+The interactive line plot shows the trends in tornado injuries and fatalities over the years.
+
+Both injuries and fatalities have seen fluctuations, with some years experiencing higher counts than others implies the variability, indicating that tornado impacts can vary from year to year.
+   
+The plot allows users to hover over data points to get specific counts for each year.
+
+**Tornado Injuries and Fatalities by EF Rating:**
+
+The interactive bar plot displays the total injuries and fatalities for each EF rating, excluding EF ratings with a value of -9.
+
+EF4 tornadoes and EF3 tornadoes contribute significantly to total injuries and fatalities, highlighting the potential severity of these tornado categories.
+
+Users can hover over the bars to see the specific counts for each EF rating.
+
+**State-wise Tornado Injuries and Fatalities:**
+
+The interactive map visualizes state-wise tornado injuries and fatalities.
+
+It allows for a regional assessment of tornado impacts, helping identify areas that may be more prone to tornado-related injuries and fatalities.
+
+Users can click on each state to view the tornado injuries and fatalities counts with a clear geographical representation.
 
 
 
