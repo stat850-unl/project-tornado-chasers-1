@@ -50,8 +50,6 @@ library(tidyverse)
 
 tornado <-read.csv("https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv")
 
-#print the data information
-str(tornado)
 
 ```
 
@@ -78,6 +76,13 @@ library(tmap)
 library(ggplot2)
 library(usmap)
 library(showtext)
+library(plotly)
+library(leaflet)
+library(dplyr)
+library(sf)
+library(maps)
+library(ggplot2)
+library(patchwork)
 
 ```
 
@@ -106,9 +111,11 @@ print(missing_values)
 
 ```
 
-It looks like the output indicates that there are no missing values in any of the columns of your "tornado" data frame. Each column has a count of 0, meaning there are no missing values.
+It looks like the output indicates that there are no missing values in any of the columns of "tornado" data frame. Each column has a count of 0, meaning there are no missing values.
 
 -   Identify and Handling Inconsistent Values
+
+Get the summary of the data set
 
 ```{r}
 summary(tornado)
@@ -147,9 +154,7 @@ print(unique(negative_mag_rows$yr))
 
 These rows seem to represent tornadoes from year 2016-2022 where the original magnitude ("mag") is listed as -9, and the "fc" value is set to 0, according to the modification scheme (ref) indicating that no modification was made for these tornadoes.
 
-This output aligns where tornadoes with a F-scale rating of -9 were not modified based on property loss and path length criteria.
-
-(https://www.spc.noaa.gov/wcm/#data https://www.spc.noaa.gov/wcm/OneTor_F-scale-modifications.pdf)
+This output aligns where tornadoes with a F-scale rating of -9 were not modified based on property loss and path length criteria ([Noaa](https://www.spc.noaa.gov/wcm/#data)) / [Info](https://www.spc.noaa.gov/wcm/OneTor_F-scale-modifications.pdf).
 
 II. "date" and "time" Columns:
 
@@ -161,7 +166,7 @@ tornado$date <- as.Date(tornado$date, format="%Y-%m-%d")
 
 # Convert "time" to POSIXct class
 tornado$time <- as.POSIXct(tornado$time, format="%H:%M:%S")
-
+head(tornado$time)
 ```
 
 III. "st" Column:
@@ -202,6 +207,9 @@ Focus on the variables that are crucial for examining tornado frequency and inte
 ```{r}
 # Subset the data
 tornado_subset <- tornado[, c("yr", "mo", "mag")]
+
+head(tornado_subset)
+
 ```
 
 II. Aggregate Tornado Frequency by Year:
@@ -211,6 +219,10 @@ Calculate the total number of tornadoes per year to examine the frequency trend.
 ```{r}
 # Aggregate tornado frequency by year
 tornado_frequency <- aggregate(mag ~ yr, data = tornado_subset, FUN = length)
+
+head(tornado_frequency)
+
+
 ```
 
 III. Plot Tornado Frequency Over Time:
@@ -224,29 +236,47 @@ trend_frequency <- lm(mag ~ yr, data = tornado_frequency)
 # Plot tornado frequency over time with trend lines
 plot(tornado_frequency$yr, tornado_frequency$mag, type = "l", xlab = "Year", ylab = "Tornado Frequency", main = "Tornado Frequency Over Time with Trend Line")
 abline(trend_frequency, col = "red")
+
 ```
 
 IV. Explore Tornado Intensity Trends:
 
 Examine trends in tornado intensity (magnitude) over time. And calculate the average magnitude per year.
 
+
+
+
 ```{r}
 # Aggregate average tornado magnitude by year
 tornado_intensity <- aggregate(mag ~ yr, data = tornado_subset, FUN = mean)
 
+head(tornado_intensity)
+
+
 ```
 
-IV. Plot Tornado Intensity Over Time:\*\*
+IV. Plot Tornado Intensity Over Time:
 
 Visualize the trend in tornado intensity over the years.
 
-```{r}
-# Fit linear trend line for tornado intensity
-trend_intensity <- lm(mag ~ yr, data = tornado_intensity)
+
+Woking on....
+
+```{r, eval=FALSE}
+# Fit linear trend line for tornado intensity (excluding mag == -9)
+
+
+total_impact_by_mag <- tornado %>%
+  filter(mag != -9) %>%
+  group_by(yr)%>%
+ summarise(mean_mag = mean(mag))
+#total_impact_by_mag
+trend_intensity <- lm(mean_mag ~ yr, data = total_impact_by_mag)
 
 # Plot tornado intensity over time
-plot(tornado_intensity$yr, tornado_intensity$mag, type = "l", xlab = "Year", ylab = "Average Tornado Magnitude", main = "Tornado Intensity Over Time with Trend Line")
+plot(yr, mean_mag, type = "l", xlab = "Year", ylab = "Tornado Magnitude", main = "Tornado Intensity Over Time with Trend Line")
 abline(trend_intensity, col = "red")
+
 
 ```
 
@@ -260,6 +290,9 @@ The pattern (zig-zag)indicate some variability in tornado frequency from year to
 
 **The tornado intensity over the years:**
 
+Woking on....
+
+
 **2. Investigate seasonal and regional variations in tornado occurrences. Are there particular months or states with higher tornado activity.**
 
 Steps to investigate seasonal and regional variations in tornado occurrences using interactive maps.
@@ -271,6 +304,10 @@ Subset the data to include relevant variables for mapping, such as latitude (`sl
 ```{r}
 # Subset the data
 tornado_map_data <- tornado[, c("slat", "slon", "elat", "elon", "mo","st")]
+
+head(tornado_map_data)
+
+
 ```
 
 II. Create Seasonal and Regional Aggregations:
@@ -309,9 +346,9 @@ III. Create Interactive Maps and plots:
 
 Create interactive plot for monthly tornado variation.
 
-```{r}
+```{r,warning = F}
 
-library(plotly)
+#library(plotly)
 
 plot_ly(data = tornado_monthly_counts , x = ~mo, y = ~total_tornadoes, type = "scatter", mode = "lines+markers", 
         name = "Tornado Count", line = list(color = "blue")) %>%
@@ -323,12 +360,13 @@ plot_ly(data = tornado_monthly_counts , x = ~mo, y = ~total_tornadoes, type = "s
 
 Create interactive map using `leaflet` to visualize state-wise tornado count
 
-```{r}
+```{r, warning=FALSE}
+
 library(leaflet)
 library(dplyr)
 library(sf)
 library(usmap)
-library(maps)  
+library(maps)
 
 # Create a summary data frame with tornado counts by state
 tornado_counts <- tornado %>%
@@ -425,7 +463,8 @@ I. Subset Data for Relevant Variables
 tornado_impact_subset <- tornado[, c("yr","state_full","st","mag", "inj", "fat", "loss", "closs","f1",
                                      "f2","f3","f4","stf")]
 
-# Check for missing values
+head(tornado_impact_subset)
+
 #summary(tornado_impact_subset)
 ```
 
@@ -481,8 +520,8 @@ Generate an interactive bar plot to visualize the total injuries and fatalities 
 
 ```{r}
 
-library(tidyverse)
-library(plotly)
+ library(tidyverse)
+ library(plotly)
 
 # Create a bar plot for injuries and fatalities by magnitude
 plotly_bar_inj_fat <- ggplot(total_impact_by_mag, aes(x = factor(mag))) +
@@ -506,30 +545,36 @@ plotly_bar_inj_fat
 
 IV. Identify tornado Injuries and Fatalities by State and visualizing:
 
-Count no of tornado Injuries and Fatalities by State
+Count no of tornado Injuries and Fatalities by State and Calculate total human impact
 
 ```{r}
 # Create a summary data frame with tornado Injuries and Fatalities by State 
 total_impact_by_st <- tornado_impact_subset %>%
   group_by(state_full) %>%
   summarise(total_injuries = sum(inj), total_fatalities = sum(fat))
+
+# Calculate total human impact by adding injuries and fatalities
+total_impact_by_st <- total_impact_by_st %>%
+  mutate(total_human_impact = total_injuries + total_fatalities)
+
 total_impact_by_st
 ```
 
-Create interactive map using `leaflet` to visualize state-wise tornado Injuries and Fatalities
+Create interactive map using `leaflet` to visualize state-wise tornado Injuries and Fatalities.
 
-```{r}
+```{r, warning=FALSE}
 
-library(leaflet)
-library(dplyr)
-library(sf)
-library(usmap)
-library(maps)  
+ library(leaflet)
+ library(dplyr)
+ library(sf)
+ library(usmap)
+ library(maps)  
 
-# Create a summary data frame with tornado Injuries and Fatalities by State 
 total_impact_by_st <- tornado_impact_subset %>%
   group_by(state_full) %>%
   summarise(total_injuries = sum(inj), total_fatalities = sum(fat))
+total_impact_by_st <- total_impact_by_st %>%
+  mutate(total_human_impact = total_injuries + total_fatalities)
 
 
 state_abbreviations <- data.frame(
@@ -550,11 +595,23 @@ us_states <- merge(us_states1, total_impact_by_st, by.x = "ID", by.y = "state_fu
 leaflet(data = us_states) %>%
   addProviderTiles("CartoDB.Voyager") %>%
   addPolygons(
+    fillColor = ~colorQuantile("YlOrRd", us_states$total_human_impact)(us_states$total_human_impact),
+    fillOpacity = 0.7,
     highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
     label = ~paste(us_states$ID,
                    "Tornado Injuries:", us_states$total_injuries,
-                   "Tornado Fatalities:", us_states$total_fatalities)
+                   "Tornado Fatalities:", us_states$total_fatalities,
+                   "Total Human Impact:",us_states$total_human_impact)
+) %>%
+  addLegend(
+    position = "bottomright",
+    pal = colorQuantile("YlOrRd", us_states$total_human_impact),
+    values = us_states$total_human_impact,
+    title = "Total Human Impact",
+    opacity = 0.7
   ) 
+
+
   
 
 ```
@@ -583,22 +640,21 @@ The interactive map visualizes state-wise tornado injuries and fatalities.
 
 It allows for a regional assessment of tornado impacts, helping identify areas that may be more prone to tornado-related injuries and fatalities.
 
-Users can click on each state to view the tornado injuries and fatalities counts with a clear geographical representation.
-
-
+Here visualize each state to view the tornado injuries and fatalities counts with a clear geographical representation.
 
 **2. Assess the economic impact of tornadoes by analyzing variables such as property and crop losses.**
 
 I. Subset Data for Relevant Variables:
 
-Select variables related to economic impact, such as property losses (loss), crop losses (closs), and  other relevant economic indicators.
+Select variables related to economic impact, such as property losses (loss), crop losses (closs), and other relevant economic indicators.
 
 ```{r}
 # Subset data for relevant economic impact variables
 tornado_economic_subset <- tornado[, c("yr", "state_full", "st", "loss", "closs")]
 
-```
+head(tornado_economic_subset)
 
+```
 
 II. Aggregate Economic Impact by Year:
 
@@ -611,8 +667,6 @@ total_economic_impact_by_year <- aggregate(cbind(loss, closs) ~ yr, data = torna
 total_economic_impact_by_year$total_loss_yr <- total_economic_impact_by_year$loss + total_economic_impact_by_year$closs
 total_economic_impact_by_year
 
-
-
 ```
 
 Create visualizations, using a line plots , to show the trends in property and crop losses over the years.
@@ -621,9 +675,9 @@ Create visualizations, using a line plots , to show the trends in property and c
 
 # Create a line plot for economic impact over time
 plot_economic_impact <- ggplot(total_economic_impact_by_year, aes(x = yr)) +
-  geom_line(aes(y = loss, color = "Property Loss"), alpha = 0.8) +
-  geom_line(aes(y = closs, color = "Crop Loss"), alpha = 0.8) +
-  #geom_line(aes(y = total_loss_yr, color = "Total Loss"), alpha = 0.8) +
+  geom_line(aes(y = log(loss + 1), color = "Property Loss"), alpha = 0.8) +
+  geom_line(aes(y = log(closs + 1), color = "Crop Loss"), alpha = 0.8) +
+  geom_line(aes(y = log(total_loss_yr+1), color = "Total Loss"), alpha = 0.8) +
   labs(title = "Tornado Economic Impact Over Time",
        x = "Year",
        y = "Losses",
@@ -636,40 +690,6 @@ plot_economic_impact
 
 
 ```
-
-
-```{r}
-# Create a grouped bar plot for economic impact over time
-plot_economic_impact_bar <- ggplot(total_economic_impact_by_year, aes(x = as.factor(yr))) +
-  geom_bar(aes(y = loss, fill = "Property Loss"), position = "dodge", stat = "identity", width = 0.7) +
-  geom_bar(aes(y = closs, fill = "Crop Loss"), position = "dodge", stat = "identity", width = 0.7) +
-  geom_bar(aes(y = total_loss_yr, fill = "Total Loss"), position = "dodge", stat = "identity", width = 0.7) +
-  labs(title = "Tornado Economic Impact Over Time",
-       x = "Year",
-       y = "Losses",
-       fill = "Loss Type") +
-  scale_fill_manual(values = c("Property Loss" = "blue", "Crop Loss" = "green", "Total Loss" = "red")) +
-  theme_minimal() +
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14),
-        legend.text = element_text(size = 12),
-        legend.title = element_text(size = 14),
-        plot.title = element_text(size = 16, face = "bold"))
-
-plot_economic_impact_bar
-
-
-
-```
-
-
-
-
-
-
-
-
-
 
 III. Assess Economic Impact by State:
 
@@ -685,63 +705,102 @@ total_economic_impact_by_state
 
 ```
 
+visualizations the economic impact by state.
 
-Use visualizations, such as bar plots or maps, to show the economic impact by state.
+Identify top 10 states which have highest property loss.
+
+```{r}
+top_loss_states <- total_economic_impact_by_state[order(-total_economic_impact_by_state$loss), "state_full"][1:10]
+
+top_loss_states
+```
+
+Identify top 10 states which have highest crop loss.
 
 ```{r}
 
-# Create a bar plot for economic impact by state
-plot_economic_impact_by_state <- ggplot(total_economic_impact_by_state, aes(x = reorder(state_full, -loss), y = loss)) +
-  geom_bar(stat = "identity", fill = "blue") +
-  labs(title = "Tornado Economic Impact by State",
-       x = "State",
-       y = "Property Loss") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+top_closs_states <- total_economic_impact_by_state[order(-total_economic_impact_by_state$closs), "state_full"][1:10]
 
-plot_economic_impact_by_state
+top_closs_states
+
+```
+
+Bar plots which have state-wise highest Property loss and Crop loss.
+
+```{r}
+ library(ggplot2)
+ library(patchwork)
+
+
+# highest property loss
+top_loss_states <- total_economic_impact_by_state[order(-total_economic_impact_by_state$loss), "state_full"][1:10]
+
+subset_loss <- total_economic_impact_by_state[total_economic_impact_by_state$state_full %in% top_loss_states, ]
+
+loss_bar_plot <- ggplot(subset_loss, aes(x = reorder(state_full, -loss), y = loss)) +
+  geom_bar(aes(fill = "Total Loss"), stat = "identity", position = "dodge", width = 0.7) +
+  labs(title = "Top States with Highest Property Loss",
+       x = "State",
+       y = "Total Property Loss",
+       fill = "Loss Type") +
+  scale_fill_manual(values = c("Total Loss" = "blue")) +
+  theme_minimal() +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
+
+# highest closs
+top_closs_states <- total_economic_impact_by_state[order(-total_economic_impact_by_state$closs), "state_full"][1:10]
+
+subset_closs <- total_economic_impact_by_state[total_economic_impact_by_state$state_full %in% top_closs_states, ]
+
+closs_bar_plot <- ggplot(subset_closs, aes(x = reorder(state_full, -closs), y = closs)) +
+  geom_bar(aes(fill = "Crop Loss"), stat = "identity", position = "dodge", width = 0.5) +
+  labs(title = "Top States with Highest Crop Loss",
+       x = "State",
+       y = "Total Crop Loss",
+       fill = "Loss Type") +
+  scale_fill_manual(values = c("Crop Loss" = "green")) +
+  theme_minimal() +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+combined_plot <- loss_bar_plot + closs_bar_plot
+
+combined_plot
+
 
 
 ```
 
+Interactive map for state-wise total economic loss including Property loss and Crop loss.
 
-```{r}
+```{r, warning=FALSE}
 
 
-library(leaflet)
-library(dplyr)
-library(sf)
-library(usmap)
-library(maps)  
+ library(leaflet)
+ library(dplyr)
+ library(sf)
+ library(usmap)
+ library(maps)  
 
 total_economic_impact_by_state <- aggregate(cbind(loss, closs) ~ state_full, data = tornado_economic_subset, sum) 
 total_economic_impact_by_state$total_loss <- total_economic_impact_by_state$loss + total_economic_impact_by_state$closs
 
-# Load a data frame mapping state names to state abbreviations
 state_abbreviations <- data.frame(
   state_full = state.name,
   state_abbr = state.abb
 )
 
-# Merge tornado counts with state abbreviations
 total_economic_impact_by_state <- merge(total_economic_impact_by_state, state_abbreviations, by = "state_full")
 
-# Load U.S. state map data
 us_states <- st_as_sf(map("state", plot = FALSE, fill = TRUE))
 
-# Check and fix invalid geometries
 us_states1 <- st_make_valid(us_states)
-# Convert 'ID' column in 'us_states1' to lowercase
 us_states1$ID <- tolower(us_states1$ID)
 
-# Convert 'state_full' column in 'tornado_counts' to lowercase
 total_economic_impact_by_state$state_full <- tolower(total_economic_impact_by_state$state_full)
 
-# Merge tornado counts with U.S. state map (case-insensitive)
 us_states <- merge(us_states1, total_economic_impact_by_state, by.x = "ID", by.y = "state_full", all.x = TRUE)
 
-# Create an interactive map
-# Create an interactive map with a different fill color
 leaflet(data = us_states) %>%
   addProviderTiles("CartoDB.Voyager") %>%
   addPolygons(
@@ -757,112 +816,61 @@ leaflet(data = us_states) %>%
     position = "bottomright",
     pal = colorQuantile("YlOrRd", us_states$tornado_count),
     values = us_states$total_loss,
-    title = "Total loss Count",
+    title = "Total Economic loss ",
     opacity = 0.7
   )
 
-
-
 ```
 
+Iv. Interpret the results:
 
-```
+**Economic Impact Over Time**
 
+The line plot visualizes the economic impact of tornadoes over the years, considering property losses (blue line), crop losses (green line), and total losses (red line). The y-axis is in log scale to handle the wide range of economic losses. From the plot, we can observe:
 
+-   Property losses show a fluctuating pattern over the years, with some noticeable spikes.
+-   Crop losses seem to vary, but there are years with significant increases.
+-   The total economic impact follows a similar pattern to property losses.
 
+**Economic Impact by State**
 
+The bar plots highlight the top states with the highest property losses (blue bars) and crop losses (green bars). The states are ordered based on the severity of the losses. Interpretations include:
 
-**3. Explore the spatial distribution of tornado impact, focusing on the geographical areas most affected by these natural disasters.**
+Top States with Highest Property Loss:
+
+-   Texas, Tennessee, Ohio, Iowa, and Louisiana are among the states with the highest property losses.
+-   The bar plot provides a clear comparison of the magnitude of property losses across these states.
+
+Top States with Highest Crop Loss:
+
+-   Mississippi, Georgia, Nebraska, North Dakota, and Minnesota are prominent in terms of crop losses.
+-   The plot emphasizes the variability in crop losses among the top states.
+
+**State-Wise Economic Impact on Interactive Map**
+
+The interactive map provides a geospatial view of the total economic losses (including property and crop losses) across states. The color intensity on the map represents the total economic losses. Interpretations include:
+
+-   Darker shades indicate higher total economic losses, offering a quick overview of the most affected states.
+-   Hovering over each state provides detailed information on the total loss, property loss, and crop loss.
+
+**Overall Interpretation**
+
+-   The economic impact of tornadoes is substantial and varies across both time and geographic regions.
+-   Certain states consistently experience higher losses, emphasizing the importance of regional resilience measures.
+-   The combination of line plots, bar graphs, and an interactive map provides a comprehensive understanding of tornado-related economic impacts.
 
 ## Developing Shiny Application
 
 **1. The Shiny application will be built to import and utilize the tornado data set.**
 
-### Data Analyzing Approach
-
-1.  Identifying and addressing missing values in the tornado data set. This will involve techniques such as imputation or removal of rows with significant missing data. Special attention will be given to critical columns, such as **inj**, **fat**, and **mag**. And perform outlier detection to identify data points that significantly deviate from the norm
-
-2.  Data inconsistencies, such as conflicting records or contradictory information, will be resolved. This may involve cross-referencing with external sources particularly in FIPS Codes for Counties (**f1**, **f2**, **f3**, **f4**).
-
-3.  Additional features or variables may be created to enhance the analysis. For example, calculate the total impact (injuries, fatalities, loss) for each tornado event, create time-based variables (season, time of day).
-
-4.  To examine long-term trends in tornado frequency and intensity, we can perform a time series analysis of tornado occurrences over the years, studying variations in the number and intensity of tornadoes.
-
-5.  For investigating seasonal and regional variations in tornado occurrences, we can create visualizations and summaries that highlight the months and states with the highest tornado activity, using the **mo**, **st**, and **stf** columns.
-
-6.  To investigate the distribution of tornado magnitudes, we can create histograms and box plots of the **mag** column, which represents tornado intensity. We can also examine changes in tornado magnitude over time.
-
-7.  To assess the economic and human impact of tornadoes, we can calculate statistics such as the mean, median, and maximum values of injuries, fatalities, property losses, and crop losses. This will help identify trends and the most severely affected areas.
-
-8.  Analyzing the geographical distribution of tornado impact can be done by mapping the areas with the highest impacts and visualizing the affected regions.
-
-9.  With the data analysis approach mentioned earlier, we are planing to add those in to a Shiny web application with implementing a variety of interactive visualizations within the Shiny application to address each of the project's goals more effectively. For instance:
-
--   Time series plots for trend analysis.
--   Heatmaps, choropleth maps, or scatter plots to visualize regional and seasonal variations.
--   Box plots, histograms, and distribution curves for magnitude and impact analysis.
--   Interactive maps for visualizing tornado impact locations.
-
-Describe any data cleaning and rearranging you needed to do to get your dataset into a workable form. Make sure to cite any packages which were important in your data cleaning process in this section. For instance, if you used dplyr, then it would be appropriate to say something like
-
-> we used the group-apply-combine paradigm with the `dplyr` functions `group_by` and `summarize` [@dplyr-package] to generate a dataset for each day of the observation period from the 15-minute interval observations in the raw data set.
-
-## Topic of Exploration
-
-Here, you want to introduce the first topic you want to explore with your (newly cleaned up) data. Code to process data should be contained in chunks above this point, and those chunks should *not* be included in the report.
-
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
-
-If you generate a figure, it should have a caption. Here's a demonstration of how to do that:
-
-```{r iris-plot}
-#| label: fig-iris
-#| fig-width: 8
-#| fig-height: 4 # Change the figure dimensions using fig-width/height
-#| out-width: 80% # This changes the size of the figure as rendered in the text. 
-#| fig-cap: "This figure shows the relationship between sepal width and petal width in irises. I've used geom_jitter to combat overplotting, as the data are measured in relatively consistent increments. The figure is drawn with `ggplot2` [@ggplot2-package]."
-#| echo: false
-
-
-data(iris)
-library(ggplot2)
-ggplot(iris, aes(x = Sepal.Width, y = Petal.Width, color = Species)) + 
-  geom_jitter() + 
-  xlab("Sepal Width (cm)") + ylab("Petal Width (cm)") + 
-  ggtitle("Sepal and Petal Dimensions")
-```
-
-Then, you can reference @fig-iris in the text and the appropriate cross-reference will be generated.
-
-You can find additional information about formatting figures generated from code in the [quarto documentation](https://quarto.org/docs/authoring/figures.html#computations).
-
-## Additional Exploration topic
-
-Add another topic here... as many as you desire, really. Make sure to include a transition between the two sections that connects the two with some sort of logical train of thought.
-
 ## Conclusion
 
 Here, you want to summarize the main points of what you've learned from this investigation, in paragraph form.
 
-## Tips
+The visualizations and analyses can aid policymakers, emergency res ponders, and researchers in making informed decisions to mitigate the economic impact of tornadoes.
 
-(delete this section from your report!)
+## References
 
-Almost anything you might want to know about how to format output in quarto can be found [here](https://quarto.org/docs/authoring/markdown-basics.html). Feel free to email/come to office hours to figure out how to do XYZ - part of the goal of making you write this report is that I want you to know how to write e.g. a journal paper in Quarto as well, so now's the time to experiment.
+Tornadoes. (n.d.). NOAA National Severe Storms Laboratory. https://www.nssl.noaa.gov/research/tornadoes/ In-Text Citation: (Tornadoes, n.d.)
 
-If you want to know what the wordcount of your report is, you can run the following command in your terminal:
-
-```         
-pandoc --lua-filter wordcount.lua report.qmd
-```
-
-Notice that I have not pushed `_output/report.html` or the `_output/report_files/` folder to github - this is intentional. I have actually set `_output` to not show up in git, to encourage you all to NOT push the rendered files to github and to instead work from the markdown files directly.
-
-You may find it cleaner to create a figure subdirectory and store any figures that aren't created by R/Python in that folder. I encourage you to organize this repository in a sensible way.
+Storm Prediction Center Maps, Graphics, and Data Page. (n.d.). https://www.spc.noaa.gov/wcm/ In-Text Citation: (Storm Prediction Center Maps, Graphics, and Data Page, n.d.)
