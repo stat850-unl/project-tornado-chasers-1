@@ -31,13 +31,13 @@ library(patchwork)
 
 Here are the goals of the data explore:
 
--   Data Analysis: Cleaning and Pre-processing
+-   Data Analysis: Cleaning and Pre-processing.
 
 -   Tornado Trends and Patterns: Frequencies & intense over time, Investigate regional variations.
 
--   Tornado Impact Assessment: Assess the economic and human impact of tornadoes focusing on the geographical areas
+-   Tornado Impact Assessment: Assess the economic and human impact of tornadoes focusing on the geographical areas.
 
--   Develop Shiny Application: Tornadoes in the United States
+-   Develop Shiny Application: Tornadoes in the United States.
 
 ![](slide1.png)
 
@@ -443,7 +443,7 @@ plotly_line_plot
 
 ## 3. Tornado Impact Assessment cont..
 
-2.  an interactive bar plot to visualize the total injuries and fatalities for each EF rating.
+2. An interactive bar plot to visualize the total injuries and fatalities for each EF rating.
 
 
 ::: columns
@@ -493,7 +493,7 @@ plotly_bar_inj_fat
 
 ## 3. Tornado Impact Assessment cont..
 
-3.  interactive map using `leaflet` to visualize state-wise tornado Injuries and Fatalities.
+3. Interactive map using `leaflet` to visualize state-wise tornado Injuries and Fatalities.
 
 
 
@@ -769,5 +769,31 @@ leaflet(data = us_states) %>%
 ## Shinny Application
 
 
+[Visit Tornadoes in US website](https://oc1ee9-chathurika-narayana.shinyapps.io/project-tornado-chasers-1/)
+
+<img src="slideWeb.png" style="width:50%;"/>
+
+
 
 ## Conclusion
+
+- Findings from the analysis, accessible through the Shiny application, support informed decisions to mitigate the impact of tornadoes.
+- Study insights contribute to a broader understanding of tornado behavior, aiding in the development of effective preparedness and resilience measures.
+- The study outcomes provide essential information for safeguarding communities through informed decision-making and strategic planning.
+
+
+## 
+
+
+<div style="text-align:center;">
+
+
+### Thank You
+
+</div>
+
+
+
+
+
+
