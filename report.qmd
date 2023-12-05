@@ -243,9 +243,6 @@ IV. Explore Tornado Intensity Trends:
 
 Examine trends in tornado intensity (magnitude) over time. And calculate the average magnitude per year.
 
-
-
-
 ```{r}
 # Aggregate average tornado magnitude by year
 tornado_intensity <- aggregate(mag ~ yr, data = tornado_subset, FUN = mean)
@@ -258,7 +255,6 @@ head(tornado_intensity)
 IV. Plot Tornado Intensity Over Time:
 
 Visualize the trend in tornado intensity over the years.
-
 
 Woking on....
 
@@ -291,7 +287,6 @@ The pattern (zig-zag)indicate some variability in tornado frequency from year to
 **The tornado intensity over the years:**
 
 Woking on....
-
 
 **2. Investigate seasonal and regional variations in tornado occurrences. Are there particular months or states with higher tornado activity.**
 
