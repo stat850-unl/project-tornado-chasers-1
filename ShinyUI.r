@@ -136,7 +136,8 @@ ui <- fluidPage(
          HTML("<h3 style='color:black;'>1. Conduct data cleaning to handle missing values, outliers, and inconsistencies in the tornado data set,
          ensuring that the data is of high quality for analysis.</h3>"), "Print the data information",
          verbatimTextOutput("data_info"),
-         "The data.frame tornado has 29 variables and 68,701 observations.Check for missing values in the data set.",
+         "The data.frame tornado has 29 variables and 68,701 observations.",br(),
+         "Check for missing values in the data set.",
          verbatimTextOutput("missing_data"),
          "some potential issues or considerations based on the summary: ",
          HTML("<h4 style='color:black;'>I. mag (Magnitude) Column:</h4>"),
@@ -468,6 +469,7 @@ server<-function(input,output){
   })
 
   output$negative_magyr<-renderPrint({
+    negative_mag_rows <- tornado[tornado$mag < 0, ]
     print(unique(negative_mag_rows$yr))
 
   })
@@ -512,6 +514,13 @@ server<-function(input,output){
 
 
   output$Plotbymonth<-renderPlotly({
+
+    tornado_map_data <- tornado[, c("slat", "slon", "elat", "elon", "mo","st")]
+    tornado_monthly_counts  <- tornado_map_data %>%
+      group_by(mo) %>%
+      summarise(total_tornadoes = n())
+
+
     plot_ly(data = tornado_monthly_counts , x = ~mo, y = ~total_tornadoes, type = "scatter", mode = "lines+markers",
             name = "Tornado Count", line = list(color = "blue")) %>%
       layout(title = "Tornado Occurrences by Month",
