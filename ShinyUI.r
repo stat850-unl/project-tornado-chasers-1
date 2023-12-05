@@ -75,31 +75,47 @@ ui <- fluidPage(
 
   tabsetPanel(
   tabPanel("Home",
-           box(width = 12,box(width = 4,img(src = "tornadoinfo1.jpg", width = "100%")),
-                          box(width = 4,img(src = "tornadoinfo2.jpg", width = "100%")),
-                          box(width = 4,img(src = "tornadoinfo3.jpg", width = "100%"))),
-           box(width = 12,box(width = 4,"A tornado is a rapidly rotating column of air that extends from a thunderstorm to the ground,
-           forming a funnel-shaped cloud, known as a tornado vortex",
-           a("Tornadoes.(n.d.)",href = "https://www.nssl.noaa.gov/research/tornadoes/"),
-           "These violent windstorms are characterized by their destructive power,
+           box(width = 12,box(width = 3,HTML("<h2 style='color:black;'>Here Comes a Twister</h2>"),img(src = "tornadoinfo4.jpg", width = "100%"),
+           "The sky is dark with storm clouds.You hear a roaring sound.A tube-shaped cloud streches to the ground.It is a tornado.
+           A tornado is a strong wing that spin in a circle. It also called a twister.",br(),"A tornado is a rapidly rotating column of air
+           that extends from a thunderstorm to the ground,forming a funnel-shaped cloud, known as a tornado vortex",
+           a("Tornadoes.(n.d.).",href = "https://www.nssl.noaa.gov/research/tornadoes/"),"These violent windstorms are characterized by their destructive power,
            often causing severe damage to structures, vehicles, and natural environments."),
 
-           box(width = 4,"This most destructive and fascinating natural phenomena that occur in the United States,
+
+           box(width = 3,HTML("<h2 style='color:black;'>How Tornadoes Form</h2>"),img(src = "tornadoinfo1.jpg", width = "100%"),"The rain pulls down cold air.
+               The cold air meets the rising warm air. The warm air and cold air twist around. Part of the cloud grows downward.
+               A tube of spinning reaches toward the ground. it is shaped lie a fannel.
+               when the funnel touches the ground a tornado is born.Strong wind suck up ojects from the ground.
+               Sometimes, funnel moves across lake or sea. It become a water spout.
+               Water is suck up in to the funnel.",
+               img(src = "tornadoinfo2.jpg", width = "100%"),
+              "This most destructive and fascinating natural phenomena that occur in the United States,
            with the power to wreak havoc on communities, devastate landscapes, and claim lives.
            They are often referred to as nature's most violent storms due to their ferocity and unpredictability.
+           Tornadoes often hit an area in the central of the country.it is called Tornado Alley.
            In the USA, tornadoes have long been a subject of both fear and awe, prompting researchers, meteorologists,
            and emergency response teams to seek a deeper understanding of these formidable weather events.
            The interest in exploring this extensive tornado data set arises from the profound
            impact that tornadoes have on American society and the natural environment."),
 
-           box(width = 4,"Tornadoes are a recurring and unpredictable threat, causing significant economic losses and,
+
+                          box(width = 3,HTML("<h2 style='color:black;'>Tornadoes in US</h2>"),img(src = "tornadoinfo3.jpg", width = "100%"),
+              "The dealiest tornadors ever to hit the united state was in 1925.
+              It wipe out all town. It almost 7 hundren people died.Tornadoes are a recurring and unpredictable threat, causing significant economic losses and,
             more importantly, putting human lives at risk. As a researcher,
             I am driven by the need to better understand the behavior and patterns of tornadoes to mitigate
             their destructive potential and improve our ability to predict and respond to them.
             The opportunity to delve into a comprehensive data set, spanning more than seven decades,
                is both exciting and promising. It allows for a deep exploration of trends, anomalies,
                and potential patterns in tornado occurrence and behavior, which can inform disaster preparedness,
-               risk assessment, and policy development."))),
+               risk assessment, and policy development."),
+
+                          box(width = 3,HTML("<h2 style='color:black;'>Tornado Safety</h2>"),img(src = "tornadoinfo5.jpg", width = "100%"),
+                 "Scientists watch for tornados. They use special tools to tracks storms. They lokk at pictures from space too.
+           When a tornado is comming radio and tv stations warn people. In some places sirens sound. How do people stay safe from a tornado?
+             They go indoors and keep away from windows. Some people go to undergorund tunnels called storm cellers.
+           Tornados are scary. But you can plan ahead listen for warning and know how to stay safe."))),
 
   tabPanel("Data Explore",HTML("<h2 style='color:black;'>About the Data set</h2>"),
            "The data source for the project is comes from -",
@@ -140,6 +156,7 @@ ui <- fluidPage(
          verbatimTextOutput("statefull"),
 
          ),
+  #############################################################################################################
 
   tabPanel("Trends & Pattern", box(width = 12,box(width = 6,HTML("<h3 style='color:black;'>1. Examine long-term trends in tornado frequency and intensity, and identify any significant changes over the decades.
                                     Are tornadoes becoming more frequent or intense over time</h3>"),
@@ -234,7 +251,7 @@ ui <- fluidPage(
 
           )),
 
-
+################################################################################
           tabPanel("Impact Assesment",
            box(width = 12,box(width = 6,HTML("<h3 style='color:black;'>1. Assess the human impact of tornadoes by analyzing variables such as injuries, fatalities. </h3>"),
            "Interactive line plot to visualize the trends in fatalities and injuries over the years.",
@@ -549,6 +566,7 @@ server<-function(input,output){
 
 ############################################################################################################################
 
+  total_impact_by_year <- aggregate(cbind(inj, fat) ~ yr, data = tornado_impact_subset, sum)
   output$FatInjYr <- renderPlotly({
 
 
