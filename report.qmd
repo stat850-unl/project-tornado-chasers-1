@@ -860,9 +860,15 @@ The interactive map provides a geospatial view of the total economic losses (inc
 
 ## Conclusion
 
-Here, you want to summarize the main points of what you've learned from this investigation, in paragraph form.
+The comprehensive exploration and analysis of the tornado data set spanning from 1950 to 2022 have yielded valuable insights into the patterns, characteristics, and impacts of tornado occurrences in the United States. The multifaceted examination encompassed aspects such as tornado frequency, seasonal and regional patterns, impact assessments including injuries, fatalities, and economic losses, and the development of a Shiny application for interactive exploration.
 
-The visualizations and analyses can aid policymakers, emergency res ponders, and researchers in making informed decisions to mitigate the economic impact of tornadoes.
+The increasing trend in tornado frequency over the years indicates a rising number of reported tornadoes, with inherent variability influenced by natural climate fluctuations, technological advancements, and reporting practices. Seasonal patterns highlight the prominence of tornado occurrences in spring, with March, April, and May experiencing heightened activity. Regionally, states such as Texas, Kansas, and Oklahoma consistently demonstrate higher tornado frequencies, aligning with their recognition as tornado-prone regions.
+
+The analysis of tornado impact assessments reveals fluctuating trends in injuries and fatalities over the years, emphasizing the unpredictable nature of tornado impacts. The examination of Economic Impact Over Time underscores the substantial economic losses attributed to tornadoes, with fluctuations observed in property and crop losses. State-wise economic impact assessments highlight the varying degrees of impact across different states, with Texas, Tennessee, Mississippi, and Georgia standing out for their significant losses.
+
+The developed Shiny application serves as a user-friendly tool for importing and exploring the tornado data set, offering an interactive platform for further investigations. Policymakers, emergency res ponders, and researchers can leverage the findings of this analysis to make informed decisions aimed at mitigating the economic impact of tornadoes.
+
+The insights gained from this study contribute to the broader understanding of tornado behavior, aiding in the development of effective preparedness and resilience measures to safeguard communities and minimize the impact of these formidable natural phenomena.
 
 ## References
 
