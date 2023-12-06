@@ -1,4 +1,5 @@
 ---
+title: A Comprehensive Analysis of Tornado Occurrences in the United States (1950-2022)
 format: html
 editor: visual
 ---
@@ -24,9 +25,7 @@ if (!"emo" %in% installed.packages()) {
 
 ```
 
-```{r}
 
-```
 
 ## Introduction
 
@@ -57,7 +56,7 @@ tornado <-read.csv("https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes
 
 This data set provides comprehensive information about tornadoes, including various attributes such as tornado numbers, years, months, days, dates, times, geographical coordinates, magnitudes, injuries, fatalities, property losses, and more. The data offers insights into the characteristics and impacts of tornadoes that have occurred from 1950 to 2022.
 
-It is sourced from NOAA's National Weather Service Storm Prediction Center Severe Weather Maps, Graphics, and Data Page ([Storm Prediction](https://www.spc.noaa.gov/wcm/)).This offers a rich resource for the analysis and study of tornado occurrences and their impacts, enabling researchers and meteorologists to gain insights into the patterns and characteristics of tornadoes spanning over seven decades.
+It is sourced from NOAA's National Weather Service Storm Prediction Center Severe Weather Maps, Graphics, and Data Page ([Storm Prediction Center Maps, Graphics, and Data Page, n.d.](https://www.spc.noaa.gov/wcm/)).This offers a rich resource for the analysis and study of tornado occurrences and their impacts, enabling researchers and meteorologists to gain insights into the patterns and characteristics of tornadoes spanning over seven decades.
 
 ## Project Goals
 
@@ -127,7 +126,7 @@ I. "mag" (Magnitude) Column:
 
 The minimum value is -9, which may be inconsistent since magnitude is typically a non-negative value.
 
-Identify rows which have negative magnitude.
+- Identify rows which have negative magnitude.
 
 ```{r}
 # Identify rows where magnitude is negative
@@ -143,7 +142,7 @@ print(paste('No of rows where magnitude is negative:', num_rows))
 
 ```
 
-Identify years where magnitude is negative.
+- Identify years where magnitude is negative.
 
 ```{r}
 # Identify years where magnitude is negative
@@ -152,13 +151,13 @@ print(unique(negative_mag_rows$yr))
 
 ```
 
-These rows seem to represent tornadoes from year 2016-2022 where the original magnitude ("mag") is listed as -9, and the "fc" value is set to 0, according to the modification scheme (ref) indicating that no modification was made for these tornadoes.
+These rows seem to represent tornadoes from year 2016-2022 where the original magnitude ("mag") is listed as -9, and the "fc" value is set to 0, according to the modification scheme indicating that no modification was made for these tornadoes.
 
 This output aligns where tornadoes with a F-scale rating of -9 were not modified based on property loss and path length criteria ([Noaa](https://www.spc.noaa.gov/wcm/#data)) / [Info](https://www.spc.noaa.gov/wcm/OneTor_F-scale-modifications.pdf).
 
 II. "date" and "time" Columns:
 
-Confirm that the "date" and "time" columns are correctly formatted as dates and times, respectively.
+- Confirm that the "date" and "time" columns are correctly formatted as dates and times, respectively.
 
 ```{r}
 # Convert "date" to Date class
@@ -171,7 +170,7 @@ head(tornado$time)
 
 III. "st" Column:
 
-Create a separate column called "state_full" which have the full state name.
+- Create a separate column called "state_full" which have the full state name.
 
 ```{r}
 
@@ -202,7 +201,7 @@ Steps to examine long-term trends in tornado frequency and intensity and identif
 
 I. Subset the Data for Relevant Variables:
 
-Focus on the variables that are crucial for examining tornado frequency and intensity trends. These may include the year (`yr`), month (`mo`), magnitude (`mag`), and other relevant variables.
+- Focus on the variables that are crucial for examining tornado frequency and intensity trends. These may include the year (`yr`), month (`mo`), magnitude (`mag`), and other relevant variables.
 
 ```{r}
 # Subset the data
@@ -214,7 +213,7 @@ head(tornado_subset)
 
 II. Aggregate Tornado Frequency by Year:
 
-Calculate the total number of tornadoes per year to examine the frequency trend.
+- Calculate the total number of tornadoes per year to examine the frequency trend.
 
 ```{r}
 # Aggregate tornado frequency by year
@@ -227,7 +226,7 @@ head(tornado_frequency)
 
 III. Plot Tornado Frequency Over Time:
 
-Create a plot to visualize the trend in tornado frequency over the years.
+- Create a plot to visualize the trend in tornado frequency over the years.
 
 ```{r}
 # Fit linear trend line for tornado frequency
@@ -241,7 +240,7 @@ abline(trend_frequency, col = "red")
 
 IV. Explore Tornado Intensity Trends:
 
-Examine trends in tornado intensity (magnitude) over time. And calculate the average magnitude per year.
+- Examine trends in tornado intensity (magnitude) over time. And calculate the average magnitude per year.
 
 ```{r}
 # Aggregate average tornado magnitude by year
@@ -254,11 +253,10 @@ head(tornado_intensity)
 
 IV. Plot Tornado Intensity Over Time:
 
-Visualize the trend in tornado intensity over the years.
+- Visualize the trend in tornado intensity over the years.
 
-Woking on....
 
-```{r, eval=FALSE}
+```{r}
 # Fit linear trend line for tornado intensity (excluding mag == -9)
 
 
@@ -266,12 +264,17 @@ total_impact_by_mag <- tornado %>%
   filter(mag != -9) %>%
   group_by(yr)%>%
  summarise(mean_mag = mean(mag))
-#total_impact_by_mag
+
 trend_intensity <- lm(mean_mag ~ yr, data = total_impact_by_mag)
 
-# Plot tornado intensity over time
-plot(yr, mean_mag, type = "l", xlab = "Year", ylab = "Tornado Magnitude", main = "Tornado Intensity Over Time with Trend Line")
-abline(trend_intensity, col = "red")
+# Plot tornado intensity trend over time using ggplot2
+ggplot(total_impact_by_mag, aes(x = yr, y = mean_mag)) +
+  geom_line(color = "black") +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(title = "Trend in Average Tornado Intensity Over Time",
+       x = "Year",
+       y = "Average Tornado Intensity") +
+  theme_minimal()
 
 
 ```
@@ -280,13 +283,18 @@ VI. Interpret the Results:
 
 **The tornado frequency over the years:**
 
-The increasing trend in tornado frequency from 1950 to 2022, is a positive slope of the trend line in the plot, suggests a general rise in the number of reported tornadoes over the years.
+- The increasing trend in tornado frequency from 1950 to 2022, is a positive slope of the trend line in the plot, suggests a general rise in the number of reported tornadoes over the years.
 
-The pattern (zig-zag)indicate some variability in tornado frequency from year to year. This could be influenced by various factors, such as natural climate variability, advancements in technology and reporting, or other external factors.
+- The pattern (zig-zag)indicate some variability in tornado frequency from year to year. This could be influenced by various factors, such as natural climate variability, advancements in technology and reporting, or other external factors.
 
 **The tornado intensity over the years:**
 
-Woking on....
+- Tornado intensity appears to vary over the years.There seems to be some fluctuation in tornado intensity from the early years (1950s) to the recent years (2020s).
+
+- There are periods where the tornado intensity increases (e.g., early 1950s, early 1960s, early 1970s, early 1980s, and 2010s).
+
+- The red trend line represents the linear regression trend in tornado intensity over the years. It provides an overall direction as decrease in tornado intensity over the years.
+
 
 **2. Investigate seasonal and regional variations in tornado occurrences. Are there particular months or states with higher tornado activity.**
 
@@ -294,7 +302,7 @@ Steps to investigate seasonal and regional variations in tornado occurrences usi
 
 I. Prepare Data for Mapping:
 
-Subset the data to include relevant variables for mapping, such as latitude (`slat` and `elat`), longitude (`slon` and `elon`), and the month of occurrence (`mo`).
+- Subset the data to include relevant variables for mapping, such as latitude (`slat` and `elat`), longitude (`slon` and `elon`), and the month of occurrence (`mo`).
 
 ```{r}
 # Subset the data
@@ -307,7 +315,7 @@ head(tornado_map_data)
 
 II. Create Seasonal and Regional Aggregations:
 
-Count tornado occurrences by month and region (state).
+- Count tornado occurrences by month and region (state).
 
 ```{r}
 # Count tornado occurrences by month
@@ -323,7 +331,7 @@ print(tornado_monthly_counts )
 
 ```
 
-Count tornado occurrences by region (state).
+- Count tornado occurrences by region (state).
 
 ```{r}
 
@@ -339,7 +347,7 @@ print(tornado_state_counts)
 
 III. Create Interactive Maps and plots:
 
-Create interactive plot for monthly tornado variation.
+- Create interactive plot for monthly tornado variation.
 
 ```{r,warning = F}
 
@@ -353,7 +361,7 @@ plot_ly(data = tornado_monthly_counts , x = ~mo, y = ~total_tornadoes, type = "s
 
 ```
 
-Create interactive map using `leaflet` to visualize state-wise tornado count
+- Create interactive map using `leaflet` to visualize state-wise tornado count
 
 ```{r, warning=FALSE}
 
@@ -415,33 +423,34 @@ leaflet(data = us_states) %>%
 
 ```
 
+
 IV. Interpret the Results:
 
 In this analysis, we explore the seasonal and regional patterns of tornado occurrences in the data set spanning from 1950 to 2022. The objective is to identify if there are specific months or states that exhibit higher tornado activity. To understand the seasonal variations, we aggregate tornado occurrences by month and observe the distribution.
 
 **Seasonal Patterns:**
 
-The monthly aggregation of tornado occurrences reveals the following insights:
+- The monthly aggregation of tornado occurrences reveals the following insights:
 
-March (mo = 3): March exhibits a substantial increase in tornado occurrences with 4,748 tornadoes. This could be attributed to the transition from winter to spring, creating favorable conditions for tornado formation.
+- March (mo = 3): March exhibits a substantial increase in tornado occurrences with 4,748 tornadoes. This could be attributed to the transition from winter to spring, creating favorable conditions for tornado formation.
 
-April and May (mo = 4, 5): April and May experience the highest tornado activity, with 9,792 and 15,057 tornadoes, respectively. These months typically mark the peak of tornado season, characterized by the convergence of warm and cold air masses.
+- April and May (mo = 4, 5): April and May experience the highest tornado activity, with 9,792 and 15,057 tornadoes, respectively. These months typically mark the peak of tornado season, characterized by the convergence of warm and cold air masses.
 
-June (mo = 6): Tornado activity remains elevated in June with 12,615 tornadoes, indicating a continuation of favorable weather conditions for tornado formation.
+- June (mo = 6): Tornado activity remains elevated in June with 12,615 tornadoes, indicating a continuation of favorable weather conditions for tornado formation.
 
-July to December (mo = 7-12): Tornado occurrences gradually decrease from July onwards, reaching the lowest point in December. This decline is consistent with the typical seasonal patterns, where tornadoes are less frequent in the colder months.
+- July to December (mo = 7-12): Tornado occurrences gradually decrease from July onwards, reaching the lowest point in December. This decline is consistent with the typical seasonal patterns, where tornadoes are less frequent in the colder months.
 
 **Regional Patterns:**
 
-The regional analysis, based on the total number of tornadoes by state, provides insights into the distribution of tornado activity across different states:
+- The regional analysis, based on the total number of tornadoes by state, provides insights into the distribution of tornado activity across different states:
 
-Texas (TX): Texas (TX) leads in tornado occurrences with 9,267 tornadoes, reinforcing its reputation as a tornado-prone state.
+- Texas (TX): Texas (TX) leads in tornado occurrences with 9,267 tornadoes, reinforcing its reputation as a tornado-prone state.
 
-Kansas (KS) and Oklahoma (OK): Kansas and Oklahoma follow closely with 4,429 and 4,146 tornadoes, respectively. The central United States, often part of "Tornado Alley," demonstrates a high tornado frequency.
+- Kansas (KS) and Oklahoma (OK): Kansas and Oklahoma follow closely with 4,429 and 4,146 tornadoes, respectively. The central United States, often part of "Tornado Alley," demonstrates a high tornado frequency.
 
-Florida (FL): Florida (FL) experiences significant tornado activity, recording 3,566 tornadoes. This suggests that tornadoes are not exclusive to the central plains but can also impact southeastern states.
+- Florida (FL): Florida (FL) experiences significant tornado activity, recording 3,566 tornadoes. This suggests that tornadoes are not exclusive to the central plains but can also impact southeastern states.
 
-Nebraska (NE) and Iowa (IA): Nebraska and Iowa have notable tornado occurrences, emphasizing the broader geographic distribution of tornado-prone regions.
+- Nebraska (NE) and Iowa (IA): Nebraska and Iowa have notable tornado occurrences, emphasizing the broader geographic distribution of tornado-prone regions.
 
 **Combined Analysis**
 
@@ -465,17 +474,18 @@ head(tornado_impact_subset)
 
 II. Identify tornado Injuries and Fatalities by year:
 
-Summarize the total number of injuries and fatalities for each year.
+- Summarize the total number of injuries and fatalities for each year.
 
 ```{r}
 
 # Aggregate injuries and fatalities by year
 total_impact_by_year <- aggregate(cbind(inj, fat) ~ yr, data = tornado_impact_subset, sum)
-total_impact_by_year
+head(total_impact_by_year)
 
 ```
 
-Generate an interactive line plot to visualize the trends in fatalities and injuries over the years.
+
+- Generate an interactive line plot to visualize the trends in fatalities and injuries over the years.
 
 ```{r}
 
@@ -496,9 +506,10 @@ plotly_line_plot
 
 ```
 
+
 III. Identify tornado Injuries and Fatalities by EF rating:
 
-Summarize the total number of injuries and fatalities by magnitude (mag) while excluding the value -9 to get EF rating.
+- Summarize the total number of injuries and fatalities by magnitude (mag) while excluding the value -9 to get EF rating.
 
 ```{r}
 
@@ -511,7 +522,8 @@ total_impact_by_mag
 
 ```
 
-Generate an interactive bar plot to visualize the total injuries and fatalities for each EF rating.
+
+- Generate an interactive bar plot to visualize the total injuries and fatalities for each EF rating.
 
 ```{r}
 
@@ -538,9 +550,10 @@ plotly_bar_inj_fat
 
 ```
 
+
 IV. Identify tornado Injuries and Fatalities by State and visualizing:
 
-Count no of tornado Injuries and Fatalities by State and Calculate total human impact
+- Count no of tornado Injuries and Fatalities by State and Calculate total human impact
 
 ```{r}
 # Create a summary data frame with tornado Injuries and Fatalities by State 
@@ -552,10 +565,11 @@ total_impact_by_st <- tornado_impact_subset %>%
 total_impact_by_st <- total_impact_by_st %>%
   mutate(total_human_impact = total_injuries + total_fatalities)
 
-total_impact_by_st
+head(total_impact_by_st)
 ```
 
-Create interactive map using `leaflet` to visualize state-wise tornado Injuries and Fatalities.
+
+- Create interactive map using `leaflet` to visualize state-wise tornado Injuries and Fatalities.
 
 ```{r, warning=FALSE}
 
@@ -611,37 +625,38 @@ leaflet(data = us_states) %>%
 
 ```
 
+
 V. Interpret the Results:
 
 **Trends in Tornado Injuries and Fatalities Over the Years:**
 
-The interactive line plot shows the trends in tornado injuries and fatalities over the years.
+- The interactive line plot shows the trends in tornado injuries and fatalities over the years.
 
-Both injuries and fatalities have seen fluctuations, with some years experiencing higher counts than others implies the variability, indicating that tornado impacts can vary from year to year.
+- Both injuries and fatalities have seen fluctuations, with some years experiencing higher counts than others implies the variability, indicating that tornado impacts can vary from year to year.
 
-The plot allows users to hover over data points to get specific counts for each year.
+- The plot allows users to hover over data points to get specific counts for each year.
 
 **Tornado Injuries and Fatalities by EF Rating:**
 
-The interactive bar plot displays the total injuries and fatalities for each EF rating, excluding EF ratings with a value of -9.
+- The interactive bar plot displays the total injuries and fatalities for each EF rating, excluding EF ratings with a value of -9.
 
-EF4 tornadoes and EF3 tornadoes contribute significantly to total injuries and fatalities, highlighting the potential severity of these tornado categories.
+- EF4 tornadoes and EF3 tornadoes contribute significantly to total injuries and fatalities, highlighting the potential severity of these tornado categories.
 
-Users can hover over the bars to see the specific counts for each EF rating.
+- Users can hover over the bars to see the specific counts for each EF rating.
 
 **State-wise Tornado Injuries and Fatalities:**
 
-The interactive map visualizes state-wise tornado injuries and fatalities.
+- The interactive map visualizes state-wise tornado injuries and fatalities.
 
-It allows for a regional assessment of tornado impacts, helping identify areas that may be more prone to tornado-related injuries and fatalities.
+- It allows for a regional assessment of tornado impacts, helping identify areas that may be more prone to tornado-related injuries and fatalities.
 
-Here visualize each state to view the tornado injuries and fatalities counts with a clear geographical representation.
+- Here visualize each state to view the tornado injuries and fatalities counts with a clear geographical representation.
 
 **2. Assess the economic impact of tornadoes by analyzing variables such as property and crop losses.**
 
 I. Subset Data for Relevant Variables:
 
-Select variables related to economic impact, such as property losses (loss), crop losses (closs), and other relevant economic indicators.
+- Select variables related to economic impact, such as property losses (loss), crop losses (closs), and other relevant economic indicators.
 
 ```{r}
 # Subset data for relevant economic impact variables
@@ -653,18 +668,19 @@ head(tornado_economic_subset)
 
 II. Aggregate Economic Impact by Year:
 
-Calculate the total property and crop losses for each year to examine the overall economic impact.
+- Calculate the total property and crop losses for each year to examine the overall economic impact.
 
 ```{r}
 
 # Aggregate economic impact by year
 total_economic_impact_by_year <- aggregate(cbind(loss, closs) ~ yr, data = tornado_economic_subset, sum)
 total_economic_impact_by_year$total_loss_yr <- total_economic_impact_by_year$loss + total_economic_impact_by_year$closs
-total_economic_impact_by_year
+head(total_economic_impact_by_year)
 
 ```
 
-Create visualizations, using a line plots , to show the trends in property and crop losses over the years.
+
+- Create visualizations, using a line plots , to show the trends in property and crop losses over the years.
 
 ```{r}
 
@@ -686,23 +702,24 @@ plot_economic_impact
 
 ```
 
+
 III. Assess Economic Impact by State:
 
-Calculate the total property and crop losses for each state and create new colmn for total loss to assess the economic impact on a regional level.
+- Calculate the total property and crop losses for each state and create new colmn for total loss to assess the economic impact on a regional level.
 
 ```{r}
 # Aggregate economic impact by state with the sum of loss and closs
 total_economic_impact_by_state <- aggregate(cbind(loss, closs) ~ state_full, data = tornado_economic_subset, sum)
 total_economic_impact_by_state$total_loss <- total_economic_impact_by_state$loss + total_economic_impact_by_state$closs
 
-total_economic_impact_by_state
+head(total_economic_impact_by_state)
 
 
 ```
 
 visualizations the economic impact by state.
 
-Identify top 10 states which have highest property loss.
+- Identify top 10 states which have highest property loss.
 
 ```{r}
 top_loss_states <- total_economic_impact_by_state[order(-total_economic_impact_by_state$loss), "state_full"][1:10]
@@ -710,7 +727,7 @@ top_loss_states <- total_economic_impact_by_state[order(-total_economic_impact_b
 top_loss_states
 ```
 
-Identify top 10 states which have highest crop loss.
+- Identify top 10 states which have highest crop loss.
 
 ```{r}
 
@@ -720,7 +737,7 @@ top_closs_states
 
 ```
 
-Bar plots which have state-wise highest Property loss and Crop loss.
+- Bar plots which have state-wise highest Property loss and Crop loss.
 
 ```{r}
  library(ggplot2)
@@ -766,7 +783,8 @@ combined_plot
 
 ```
 
-Interactive map for state-wise total economic loss including Property loss and Crop loss.
+
+- Interactive map for state-wise total economic loss including Property loss and Crop loss.
 
 ```{r, warning=FALSE}
 
@@ -854,21 +872,30 @@ The interactive map provides a geospatial view of the total economic losses (inc
 -   Certain states consistently experience higher losses, emphasizing the importance of regional resilience measures.
 -   The combination of line plots, bar graphs, and an interactive map provides a comprehensive understanding of tornado-related economic impacts.
 
-## Developing Shiny Application
+## Develop Shiny Application
 
-**1. The Shiny application will be built to import and utilize the tornado data set.**
+**The Shiny application built to import and utilize the tornado data set.**
+
+- We create a dynamic and interactive Shiny Application designed to explore and analyze tornado data.
+
+- Here is the link of the hosted application on shiny server: [Tornadoes in the United States](https://oc1ee9-chathurika-narayana.shinyapps.io/project-tornado-chasers-1/). 
+
+- The tornado data set serves as the foundation for our Shiny Application, enabling users to interactively engage with the information and draw meaningful conclusions.
+- The application incorporates an intuitive map interface that allows users to visualize tornado occurrences across different regions. Users can zoom in, pan, and click on specific tornado events to retrieve detailed information.
+- The application provides statistical summaries, graphs, and charts, offering a deeper understanding of tornado characteristics. Users can explore frequency distributions, analyze intensity trends, and extract valuable statistical insights.
+- The Shiny Server facilitates the deployment of interactive web applications, ensuring seamless access for users. 
+
 
 ## Conclusion
 
-The comprehensive exploration and analysis of the tornado data set spanning from 1950 to 2022 have yielded valuable insights into the patterns, characteristics, and impacts of tornado occurrences in the United States. The multifaceted examination encompassed aspects such as tornado frequency, seasonal and regional patterns, impact assessments including injuries, fatalities, and economic losses, and the development of a Shiny application for interactive exploration.
-
-The increasing trend in tornado frequency over the years indicates a rising number of reported tornadoes, with inherent variability influenced by natural climate fluctuations, technological advancements, and reporting practices. Seasonal patterns highlight the prominence of tornado occurrences in spring, with March, April, and May experiencing heightened activity. Regionally, states such as Texas, Kansas, and Oklahoma consistently demonstrate higher tornado frequencies, aligning with their recognition as tornado-prone regions.
-
-The analysis of tornado impact assessments reveals fluctuating trends in injuries and fatalities over the years, emphasizing the unpredictable nature of tornado impacts. The examination of Economic Impact Over Time underscores the substantial economic losses attributed to tornadoes, with fluctuations observed in property and crop losses. State-wise economic impact assessments highlight the varying degrees of impact across different states, with Texas, Tennessee, Mississippi, and Georgia standing out for their significant losses.
-
-The developed Shiny application serves as a user-friendly tool for importing and exploring the tornado data set, offering an interactive platform for further investigations. Policymakers, emergency res ponders, and researchers can leverage the findings of this analysis to make informed decisions aimed at mitigating the economic impact of tornadoes.
-
-The insights gained from this study contribute to the broader understanding of tornado behavior, aiding in the development of effective preparedness and resilience measures to safeguard communities and minimize the impact of these formidable natural phenomena.
+- The comprehensive exploration and analysis of the tornado data set spanning from 1950 to 2022 have yielded valuable insights into the patterns, characteristics, and impacts of tornado occurrences in the United States. 
+- The multifaceted examination encompassed aspects such as tornado frequency, seasonal and regional patterns, impact assessments including injuries, fatalities, and economic losses, and the development of a Shiny application for interactive exploration.
+- The increasing trend in tornado frequency over the years indicates a rising number of reported tornadoes, with inherent variability influenced by natural climate fluctuations, technological advancements, and reporting practices.
+- Seasonal patterns highlight the prominence of tornado occurrences in spring, with March, April, and May experiencing heightened activity. Regionally, states such as Texas, Kansas, and Oklahoma consistently demonstrate higher tornado frequencies, aligning with their recognition as tornado-prone regions.
+- The analysis of tornado impact assessments reveals fluctuating trends in injuries and fatalities over the years, emphasizing the unpredictable nature of tornado impacts. 
+- The examination of Economic Impact Over Time underscores the substantial economic losses attributed to tornadoes, with fluctuations observed in property and crop losses. State-wise economic impact assessments highlight the varying degrees of impact across different states, with Texas, Tennessee, Mississippi, and Georgia standing out for their significant losses.
+- The developed Shiny application serves as a user-friendly tool for importing and exploring the tornado data set, offering an interactive platform for further investigations. Policymakers, emergency res ponders, and researchers can leverage the findings of this analysis to make informed decisions aimed at mitigating the economic impact of tornadoes.
+- The insights gained from this study contribute to the broader understanding of tornado behavior, aiding in the development of effective preparedness and resilience measures to safeguard communities and minimize the impact of these formidable natural phenomena.
 
 ## References
 
