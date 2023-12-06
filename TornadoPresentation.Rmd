@@ -1,8 +1,10 @@
 ---
 title: "Tornado Data Analysis in the United States"
-author: "Chathurika Narayana"
-date: "2023-12-05"
-output: slidy_presentation
+author: "Chathurika Narayana & Li Song"
+date: "2023-12-06"
+output:
+  slidy_presentation: default
+  beamer_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -222,7 +224,7 @@ head(tornado[, c("st", "state_full")])
 
 ### 2.1 Are tornadoes becoming more frequent or intense over time?
 
-1. Plot Tornado Frequency Over Time:
+1. A line plot for tornado frequency Over the time:
 
 - The variables: year (`yr`), month (`mo`), magnitude (`mag`), and other relevant variables.
 
@@ -261,9 +263,9 @@ abline(trend_frequency, col = "red")
 
 ### 2.2 Investigate seasonal and regional variations in tornado occurrences.
 
-- The variables: latitude (`slat` and `elat`), longitude (`slon` and `elon`), and the month of occurrence (`mo`).
+- variables: latitude (`slat` and `elat`), longitude (`slon` and `elon`), and the month of occurrence (`mo`).
 
-1.  Interactive plot for monthly tornado variation
+1. An Interactive line plot for monthly tornado variation
 
 
 ::: columns
@@ -315,7 +317,7 @@ plot_ly(data = tornado_monthly_counts , x = ~mo, y = ~total_tornadoes, type = "s
 
 ## 2. Tornado Trends and Patterns cont..
 
-2.  Interactive map using `leaflet` to visualize state-wise tornado count
+2. An Interactive map to visualize state-wise tornado count
 
 
 ::: columns
@@ -398,9 +400,9 @@ leaflet(data = us_states) %>%
 
 ### 3.1 Assess the human impact of tornadoes
 
-- The variables: injuries, fatalities.
+- variables: injuries, fatalities.
 
-1.  Interactive line plot to visualize the trends in fatalities and injuries over the years.
+1. An Interactive line plot to visualize the trends in fatalities and injuries over the years.
 
 ::: columns
 
@@ -443,7 +445,7 @@ plotly_line_plot
 
 ## 3. Tornado Impact Assessment cont..
 
-2. An interactive bar plot to visualize the total injuries and fatalities for each EF rating.
+2. An Interactive bar plot to visualize the total injuries and fatalities for each EF rating.
 
 
 ::: columns
@@ -483,7 +485,12 @@ plotly_bar_inj_fat
 
 :::: column
 
+![](EF.png)
+
+- The Enhanced Fujita (EF) Scale is used to assign a tornado a 'rating' based on estimated wind speeds and related damage. (from EF0 to EF5) 
 - EF4 tornadoes and EF3 tornadoes contribute significantly to total injuries and fatalities, highlighting the potential severity of these tornado categories. 
+
+
 
 ::::
 
@@ -493,7 +500,7 @@ plotly_bar_inj_fat
 
 ## 3. Tornado Impact Assessment cont..
 
-3. Interactive map using `leaflet` to visualize state-wise tornado Injuries and Fatalities.
+3. An Interactive map to visualize state-wise tornado Injuries and Fatalities.
 
 
 
@@ -563,7 +570,7 @@ leaflet(data = us_states) %>%
 
 - The variables:  property and crop losses
 
-1.  A line plots to show the trends in property and crop losses over the years.
+1. A line plots to visualize the trends in property and crop losses over the years.
 
 ::: columns
 
@@ -615,7 +622,7 @@ plot_economic_impact
 
 2.  Assess Economic Impact by State
 
-Bar plots which have state-wise highest Property loss and Crop loss.
+A Bar plots which have state-wise highest Property loss and Crop loss.
 
 ::: columns
 
@@ -694,7 +701,7 @@ Top States with Highest Crop Loss:
 
 ## 3. Tornado Impact Assessment cont..
 
-3. Interactive map for state-wise total economic loss including Property loss and Crop loss.
+3. An Interactive map for state-wise total economic loss including Property loss and Crop loss.
 
 ::: columns
 
@@ -777,7 +784,9 @@ leaflet(data = us_states) %>%
 
 ## Conclusion
 
-- Findings from the analysis, accessible through the Shiny application, support informed decisions to mitigate the impact of tornadoes.
+- The comprehensive exploration and analysis of the tornado data set spanning from 1950 to 2022 have yielded valuable insights into the patterns, characteristics, and impacts of tornado occurrences in the United States. 
+- The multifaceted examination encompassed aspects such as tornado frequency, seasonal and regional patterns, impact assessments including injuries, fatalities, and economic losses.
+- The developed Shiny application serves as a user-friendly tool for exploring the tornado data set, offering an interactive platform for further investigations.
 - Study insights contribute to a broader understanding of tornado behavior, aiding in the development of effective preparedness and resilience measures.
 - The study outcomes provide essential information for safeguarding communities through informed decision-making and strategic planning.
 
