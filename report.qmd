@@ -101,17 +101,18 @@ str(tornado)
 
 - Handling Missing Values
 
-We began by checking for missing values in each column of the data set. Fortunately, the output indicated that there were no missing values in any column, providing a solid foundation for our analysis.
+Began by checking for missing values in each column of the data set. Fortunately, the output indicated that there were no missing values in any column, providing a solid foundation for analysis.
 
 - Identifying and Handling Inconsistent Values
 
-To identify potential inconsistencies, we generated a summary of the data set. A noteworthy observation was the "mag" (Magnitude) column, which exhibited a minimum value of -9, inconsistent with the typical non-negative nature of magnitude. 
+To identify potential inconsistencies, generated a summary of the data set. 
+A noteworthy observation was the "mag" (Magnitude) column, which exhibited a minimum value of -9, inconsistent with the typical non-negative nature of magnitude. 
 
 Further investigation revealed 756 rows with negative magnitude values, all corresponding to tornadoes from 2016 to 2022. These entries indicated an original magnitude of -9 and a modification scheme ("fc" value) set to 0, denoting no modification based on property loss and path length criteria.([Noaa](https://www.spc.noaa.gov/wcm/#data)) / [Info](https://www.spc.noaa.gov/wcm/OneTor_F-scale-modifications.pdf).
 
 - Confirming Date and Time Formats
 
-We ensured that the "date" and "time" columns were correctly formatted as dates and times, respectively, by displaying sample entries.
+Ensured that the "date" and "time" columns were correctly formatted as dates and times, respectively, by displaying sample entries.
 
 ```{r,echo = F,message = F, warning = F}
 # Convert "date" to Date class
@@ -124,7 +125,7 @@ head(tornado$time)
 
 - Enhancing State Information
 
-We introduced a new column, "state_full," to provide the full names of states corresponding to the existing two-letter state codes in the "st" column. This additional information enhances the interpret ability of the dataset.
+Introduced a new column, "state_full," to provide the full names of states corresponding to the existing two-letter state codes in the "st" column. This additional information enhances the interpret ability of the data set.
 
 
 
@@ -388,7 +389,7 @@ leaflet(data = us_states) %>%
 
 IV. Interpret the Results:
 
-In this analysis, we explore the seasonal and regional patterns of tornado occurrences in the data set spanning from 1950 to 2022. The objective is to identify if there are specific months or states that exhibit higher tornado activity. To understand the seasonal variations, we aggregate tornado occurrences by month and observe the distribution.
+In this analysis,explore the seasonal and regional patterns of tornado occurrences in the data set spanning from 1950 to 2022. The objective is to identify if there are specific months or states that exhibit higher tornado activity. To understand the seasonal variations, aggregate tornado occurrences by month and observe the distribution.
 
 **Seasonal Patterns:**
 
@@ -801,7 +802,7 @@ Iv. Interpret the results:
 
 **Economic Impact Over Time**
 
-The line plot visualizes the economic impact of tornadoes over the years, considering property losses (blue line), crop losses (green line), and total losses (red line). The y-axis is in log scale to handle the wide range of economic losses. From the plot, we can observe:
+The line plot visualizes the economic impact of tornadoes over the years, considering property losses (blue line), crop losses (green line), and total losses (red line). The y-axis is in log scale to handle the wide range of economic losses. From the plot,can observe:
 
 -   Property losses show a fluctuating pattern over the years, with some noticeable spikes.
 -   Crop losses seem to vary, but there are years with significant increases.
@@ -838,7 +839,7 @@ The interactive map provides a geospatial view of the total economic losses (inc
 
 **The Shiny application built to import and utilize the tornado data set.**
 
-- We create a dynamic and interactive Shiny Application designed to explore and analyze tornado data.
+- create a dynamic and interactive Shiny Application designed to explore and analyze tornado data.
 
 - Here is the link of the hosted application on shiny server: [Tornadoes in the United States](https://oc1ee9-chathurika-narayana.shinyapps.io/project-tornado-chasers-1/). 
 
