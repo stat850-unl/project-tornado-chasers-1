@@ -179,6 +179,8 @@ ui <- fluidPage(
           HTML("<h4 style='color:black;'>III. Plot Tornado Intensity Over Time:</h4>"),
           "Visualize the trend in tornado intensity over the years.",
 
+          plotOutput("intensity_years"),
+
           HTML("<h4 style='color:black;'>IV. Interpret the Results:</h4>"),
           tags$strong("The tornado frequency over the years:"),br(),
            "The increasing trend in tornado frequency from 1950 to 2022, is a positive slope of the trend line in the plot, suggests a general rise in the number of reported tornadoes over the years.
@@ -187,7 +189,12 @@ ui <- fluidPage(
           br(),
           tags$strong("The tornado intensity over the years:"),br(),
 
-            "Woking on...."
+          "Tornado intensity appears to vary over the years.There seems to be some fluctuation in tornado intensity from the early years (1950s) to the recent years (2020s).",br(),
+
+          "There are periods where the tornado intensity increases (e.g., early 1950s, early 1960s, early 1970s, early 1980s, and 2010s).",br(),
+
+          "The red trend line represents the linear regression trend in tornado intensity over the years. It provides an overall direction as decrease in tornado intensity over the years."
+
           ),
 
           box(width = 6,HTML("<h3 style='color:black;'>2. Investigate seasonal and regional variations in tornado occurrences.
@@ -503,6 +510,27 @@ server<-function(input,output){
     trend_frequency <- lm(mag ~ yr, data = tornado_frequency)
     plot(tornado_frequency$yr, tornado_frequency$mag, type = "l", xlab = "Year", ylab = "Tornado Frequency", main = "Tornado Frequency Over Time with Trend Line")
     abline(trend_frequency, col = "red")
+  })
+
+
+
+  output$intensity_years<-renderPlot({
+
+    total_impact_by_mag <- tornado %>%
+      filter(mag != -9) %>%
+      group_by(yr)%>%
+      summarise(mean_mag = mean(mag))
+
+    trend_intensity <- lm(mean_mag ~ yr, data = total_impact_by_mag)
+
+    # Plot tornado intensity trend over time using ggplot2
+    ggplot(total_impact_by_mag, aes(x = yr, y = mean_mag)) +
+      geom_line(color = "black") +
+      geom_smooth(method = "lm", se = FALSE, color = "red") +
+      labs(title = "Trend in Average Tornado Intensity Over Time",
+           x = "Year",
+           y = "Average Tornado Intensity") +
+      theme_minimal()
   })
 
 
