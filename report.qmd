@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-```{r, eval = F}
+```{r, eval = F,echo=FALSE}
 # This code chunk contains code to install all of the dependencies
 # necessary to compile and run your report, using if-statements to
 # reduce install time for unnecessary code.
@@ -66,9 +66,8 @@ The goals of this project are to utilize this data to explore and analyze severa
 
 ## Methods
 
-libraries
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 library(tidyverse)
 library(stringr)
 library(tmap)
@@ -89,7 +88,9 @@ library(patchwork)
 
 **1. Conduct data cleaning to handle missing values, outliers, and inconsistencies in the tornado data set, ensuring that the data is of high quality for analysis.**
 
--   Print the data information
+In this section performed essential data cleaning and pre-processing on the tornado data set to ensure its quality for subsequent analysis.
+
+The data set comprises 29 variables and 68,701 observations.
 
 ```{r, echo = F,message = F, warning = F}
 #print the data information
@@ -97,69 +98,22 @@ str(tornado)
 
 ```
 
-The data.frame "tornado" has 29 variables and 68,701 observations.
 
--   Check for missing values in the data set.
+- Handling Missing Values
 
-```{r}
-# Check for missing values in each column
-missing_values <- colSums(is.na(tornado))
+We began by checking for missing values in each column of the data set. Fortunately, the output indicated that there were no missing values in any column, providing a solid foundation for our analysis.
 
-# Print the results
-print(missing_values)
+- Identifying and Handling Inconsistent Values
 
-```
+To identify potential inconsistencies, we generated a summary of the data set. A noteworthy observation was the "mag" (Magnitude) column, which exhibited a minimum value of -9, inconsistent with the typical non-negative nature of magnitude. 
 
-It looks like the output indicates that there are no missing values in any of the columns of "tornado" data frame. Each column has a count of 0, meaning there are no missing values.
+Further investigation revealed 756 rows with negative magnitude values, all corresponding to tornadoes from 2016 to 2022. These entries indicated an original magnitude of -9 and a modification scheme ("fc" value) set to 0, denoting no modification based on property loss and path length criteria.([Noaa](https://www.spc.noaa.gov/wcm/#data)) / [Info](https://www.spc.noaa.gov/wcm/OneTor_F-scale-modifications.pdf).
 
--   Identify and Handling Inconsistent Values
+- Confirming Date and Time Formats
 
-Get the summary of the data set
+We ensured that the "date" and "time" columns were correctly formatted as dates and times, respectively, by displaying sample entries.
 
-```{r}
-summary(tornado)
-```
-
-some potential issues or considerations based on the summary:
-
-I. "mag" (Magnitude) Column:
-
-The minimum value is -9, which may be inconsistent since magnitude is typically a non-negative value.
-
-- Identify rows which have negative magnitude.
-
-```{r}
-# Identify rows where magnitude is negative
-
-negative_mag_rows <- tornado[tornado$mag < 0, ] 
-mag_neg<-(negative_mag_rows[, c("om", "yr", "mo", "dy", "mag","fc")])
-
-
-num_rows <- nrow(mag_neg)
-
-print(paste('No of rows where magnitude is negative:', num_rows))
-
-
-```
-
-- Identify years where magnitude is negative.
-
-```{r}
-# Identify years where magnitude is negative
-
-print(unique(negative_mag_rows$yr))
-
-```
-
-These rows seem to represent tornadoes from year 2016-2022 where the original magnitude ("mag") is listed as -9, and the "fc" value is set to 0, according to the modification scheme indicating that no modification was made for these tornadoes.
-
-This output aligns where tornadoes with a F-scale rating of -9 were not modified based on property loss and path length criteria ([Noaa](https://www.spc.noaa.gov/wcm/#data)) / [Info](https://www.spc.noaa.gov/wcm/OneTor_F-scale-modifications.pdf).
-
-II. "date" and "time" Columns:
-
-- Confirm that the "date" and "time" columns are correctly formatted as dates and times, respectively.
-
-```{r}
+```{r,echo = F,message = F, warning = F}
 # Convert "date" to Date class
 tornado$date <- as.Date(tornado$date, format="%Y-%m-%d")
 
@@ -168,11 +122,13 @@ tornado$time <- as.POSIXct(tornado$time, format="%H:%M:%S")
 head(tornado$time)
 ```
 
-III. "st" Column:
+- Enhancing State Information
 
-- Create a separate column called "state_full" which have the full state name.
+We introduced a new column, "state_full," to provide the full names of states corresponding to the existing two-letter state codes in the "st" column. This additional information enhances the interpret ability of the dataset.
 
-```{r}
+
+
+```{r,echo = F,message = F, warning = F}
 
 # Create a mapping between state abbreviations and full names
 state_mapping <- c("AL" = "Alabama", "AK" = "Alaska", "AZ" = "Arizona", "AR" = "Arkansas", "CA" = "California",
@@ -193,6 +149,9 @@ tornado$state_full <- state_mapping[tornado$st]
 head(tornado[, c("st", "state_full")])
 ```
 
+
+
+
 ### Tornado Trends and Patterns
 
 **1. Examine long-term trends in tornado frequency and intensity, and identify any significant changes over the decades. Are tornadoes becoming more frequent or intense over time.**
@@ -203,7 +162,7 @@ I. Subset the Data for Relevant Variables:
 
 - Focus on the variables that are crucial for examining tornado frequency and intensity trends. These may include the year (`yr`), month (`mo`), magnitude (`mag`), and other relevant variables.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 # Subset the data
 tornado_subset <- tornado[, c("yr", "mo", "mag")]
 
@@ -215,7 +174,7 @@ II. Aggregate Tornado Frequency by Year:
 
 - Calculate the total number of tornadoes per year to examine the frequency trend.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 # Aggregate tornado frequency by year
 tornado_frequency <- aggregate(mag ~ yr, data = tornado_subset, FUN = length)
 
@@ -228,7 +187,7 @@ III. Plot Tornado Frequency Over Time:
 
 - Create a plot to visualize the trend in tornado frequency over the years.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 # Fit linear trend line for tornado frequency
 trend_frequency <- lm(mag ~ yr, data = tornado_frequency)
 
@@ -242,7 +201,7 @@ IV. Explore Tornado Intensity Trends:
 
 - Examine trends in tornado intensity (magnitude) over time. And calculate the average magnitude per year.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 # Aggregate average tornado magnitude by year
 tornado_intensity <- aggregate(mag ~ yr, data = tornado_subset, FUN = mean)
 
@@ -256,7 +215,7 @@ IV. Plot Tornado Intensity Over Time:
 - Visualize the trend in tornado intensity over the years.
 
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 # Fit linear trend line for tornado intensity (excluding mag == -9)
 
 
@@ -304,7 +263,7 @@ I. Prepare Data for Mapping:
 
 - Subset the data to include relevant variables for mapping, such as latitude (`slat` and `elat`), longitude (`slon` and `elon`), and the month of occurrence (`mo`).
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 # Subset the data
 tornado_map_data <- tornado[, c("slat", "slon", "elat", "elon", "mo","st")]
 
@@ -317,7 +276,7 @@ II. Create Seasonal and Regional Aggregations:
 
 - Count tornado occurrences by month and region (state).
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 # Count tornado occurrences by month
 
 tornado$mo <- factor(tornado$mo, levels = 1:12, labels = month.abb)
@@ -333,7 +292,7 @@ print(tornado_monthly_counts )
 
 - Count tornado occurrences by region (state).
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 
 # Calculate the total number of tornadoes by state
 tornado_state_counts  <- tornado_map_data  %>%
@@ -349,9 +308,9 @@ III. Create Interactive Maps and plots:
 
 - Create interactive plot for monthly tornado variation.
 
-```{r,warning = F}
+```{r,echo = F,message = F, warning = F}
 
-#library(plotly)
+library(plotly)
 
 plot_ly(data = tornado_monthly_counts , x = ~mo, y = ~total_tornadoes, type = "scatter", mode = "lines+markers", 
         name = "Tornado Count", line = list(color = "blue")) %>%
@@ -359,11 +318,14 @@ plot_ly(data = tornado_monthly_counts , x = ~mo, y = ~total_tornadoes, type = "s
          xaxis = list(title = "Month", tickmode = "array", tickvals = 1:12, ticktext =month.name),
          yaxis = list(title = "Tornado Count"))
 
+
+
+
 ```
 
 - Create interactive map using `leaflet` to visualize state-wise tornado count
 
-```{r, warning=FALSE}
+```{r,echo = F,message = F, warning = F}
 
 library(leaflet)
 library(dplyr)
@@ -462,7 +424,7 @@ The combined analysis of seasonal and regional patterns underscores the importan
 
 I. Subset Data for Relevant Variables
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 # Subset data for relevant variables
 tornado_impact_subset <- tornado[, c("yr","state_full","st","mag", "inj", "fat", "loss", "closs","f1",
                                      "f2","f3","f4","stf")]
@@ -476,7 +438,7 @@ II. Identify tornado Injuries and Fatalities by year:
 
 - Summarize the total number of injuries and fatalities for each year.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 
 # Aggregate injuries and fatalities by year
 total_impact_by_year <- aggregate(cbind(inj, fat) ~ yr, data = tornado_impact_subset, sum)
@@ -487,7 +449,7 @@ head(total_impact_by_year)
 
 - Generate an interactive line plot to visualize the trends in fatalities and injuries over the years.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 
 library(plotly)
 
@@ -511,7 +473,7 @@ III. Identify tornado Injuries and Fatalities by EF rating:
 
 - Summarize the total number of injuries and fatalities by magnitude (mag) while excluding the value -9 to get EF rating.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 
 # Aggregate injuries and fatalities by magnitude (excluding mag == -9)
 total_impact_by_mag <- tornado_impact_subset %>%
@@ -525,7 +487,7 @@ total_impact_by_mag
 
 - Generate an interactive bar plot to visualize the total injuries and fatalities for each EF rating.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 
  library(tidyverse)
  library(plotly)
@@ -555,7 +517,7 @@ IV. Identify tornado Injuries and Fatalities by State and visualizing:
 
 - Count no of tornado Injuries and Fatalities by State and Calculate total human impact
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 # Create a summary data frame with tornado Injuries and Fatalities by State 
 total_impact_by_st <- tornado_impact_subset %>%
   group_by(state_full) %>%
@@ -571,7 +533,7 @@ head(total_impact_by_st)
 
 - Create interactive map using `leaflet` to visualize state-wise tornado Injuries and Fatalities.
 
-```{r, warning=FALSE}
+```{r,echo = F,message = F, warning = F}
 
  library(leaflet)
  library(dplyr)
@@ -658,7 +620,7 @@ I. Subset Data for Relevant Variables:
 
 - Select variables related to economic impact, such as property losses (loss), crop losses (closs), and other relevant economic indicators.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 # Subset data for relevant economic impact variables
 tornado_economic_subset <- tornado[, c("yr", "state_full", "st", "loss", "closs")]
 
@@ -670,7 +632,7 @@ II. Aggregate Economic Impact by Year:
 
 - Calculate the total property and crop losses for each year to examine the overall economic impact.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 
 # Aggregate economic impact by year
 total_economic_impact_by_year <- aggregate(cbind(loss, closs) ~ yr, data = tornado_economic_subset, sum)
@@ -682,7 +644,7 @@ head(total_economic_impact_by_year)
 
 - Create visualizations, using a line plots , to show the trends in property and crop losses over the years.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 
 # Create a line plot for economic impact over time
 plot_economic_impact <- ggplot(total_economic_impact_by_year, aes(x = yr)) +
@@ -707,7 +669,7 @@ III. Assess Economic Impact by State:
 
 - Calculate the total property and crop losses for each state and create new colmn for total loss to assess the economic impact on a regional level.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 # Aggregate economic impact by state with the sum of loss and closs
 total_economic_impact_by_state <- aggregate(cbind(loss, closs) ~ state_full, data = tornado_economic_subset, sum)
 total_economic_impact_by_state$total_loss <- total_economic_impact_by_state$loss + total_economic_impact_by_state$closs
@@ -721,7 +683,7 @@ visualizations the economic impact by state.
 
 - Identify top 10 states which have highest property loss.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
 top_loss_states <- total_economic_impact_by_state[order(-total_economic_impact_by_state$loss), "state_full"][1:10]
 
 top_loss_states
@@ -739,7 +701,7 @@ top_closs_states
 
 - Bar plots which have state-wise highest Property loss and Crop loss.
 
-```{r}
+```{r,echo = F,message = F, warning = F}
  library(ggplot2)
  library(patchwork)
 
@@ -786,7 +748,7 @@ combined_plot
 
 - Interactive map for state-wise total economic loss including Property loss and Crop loss.
 
-```{r, warning=FALSE}
+```{r,echo = F,message = F, warning = F}
 
 
  library(leaflet)
